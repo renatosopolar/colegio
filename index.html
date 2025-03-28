@@ -8,31 +8,328 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
 
   <style>
-    /* (Se mantiene el estilo original tal como lo proporcionaste) */
-    * { box-sizing: border-box; }
-    body { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background-color: #e5efff; min-height: 100vh; }
-    .hidden { display: none !important; }
-    .active { display: block !important; }
-    /* LANDING PAGE */
-    #landingPage { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
-    #landingPage h1 { font-size: 1.8rem; margin-bottom: 1rem; color: #1a2e55; }
-    .landing-buttons { display: flex; gap: 1rem; }
-    .landing-buttons button { background-color: #f1c40f; color: #1a2e55; border: none; border-radius: 6px; padding: 12px 18px; font-weight: 600; cursor: pointer; font-size: 1rem; transition: background-color 0.2s; }
-    .landing-buttons button:hover { background-color: #1a2e55; color: #f1c40f; }
-    /* Contenedor genérico */
-    .app-container { display: none; background-color: #fff; width: 85%; max-width: 1100px; border: none; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin: 20px auto; position: relative; padding-bottom: 60px; }
-    .activeContainer { display: block !important; }
-    /* Botón Regresar */
-    .bottom-left-btn { position: absolute; bottom: 15px; left: 15px; background-color: #4a90e2; color: #fff; border: none; border-radius: 6px; padding: 8px 12px; font-weight: 600; cursor: pointer; }
-    .bottom-left-btn:hover { background-color: #1a2e55; }
-    /* Tabs */
-    .tabs { display: flex; background-color: #1a2e55; border-radius: 6px 6px 0 0; }
-    .tab { flex: 1; padding: 14px; text-align: center; cursor: pointer; color: #fff; font-weight: 600; transition: background-color 0.2s; }
-    .tab:hover { background-color: #4a90e2; }
-    .tab.activeTab { background-color: #4a90e2; }
-    .tab-content { display: none; padding: 20px; }
-    .tab-content.activeTabContent { display: block; }
-    /* (El resto de estilos se mantiene igual, sin modificaciones) */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #e5efff;
+      min-height: 100vh;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .active {
+      display: block !important;
+    }
+
+    /* ============ LANDING PAGE ============ */
+    #landingPage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    #landingPage h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: #1a2e55;
+    }
+    .landing-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+    .landing-buttons button {
+      background-color: #f1c40f;
+      color: #1a2e55;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 18px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.2s;
+    }
+    .landing-buttons button:hover {
+      background-color: #1a2e55;
+      color: #f1c40f;
+    }
+
+    /* ======== contenedor genérico ======== */
+    .app-container {
+      display: none;
+      background-color: #fff;
+      width: 85%;
+      max-width: 1100px;
+      border: none;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin: 20px auto;
+      position: relative;
+      padding-bottom: 60px; /* para el botón 'Regresar' */
+    }
+    .activeContainer {
+      display: block !important;
+    }
+
+    /* ====== Botón REGRESAR inferior izquierda ====== */
+    .bottom-left-btn {
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      background-color: #4a90e2;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .bottom-left-btn:hover {
+      background-color: #1a2e55;
+    }
+
+    /* ======== TABS GENERALES ======== */
+    .tabs {
+      display: flex;
+      background-color: #1a2e55;
+      border-radius: 6px 6px 0 0;
+    }
+    .tab {
+      flex: 1;
+      padding: 14px;
+      text-align: center;
+      cursor: pointer;
+      color: #fff;
+      font-weight: 600;
+      transition: background-color 0.2s;
+    }
+    .tab:hover {
+      background-color: #4a90e2;
+    }
+    .tab.activeTab {
+      background-color: #4a90e2;
+    }
+    .tab-content {
+      display: none;
+      padding: 20px;
+    }
+    .tab-content.activeTabContent {
+      display: block;
+    }
+
+    /* ======= ADMIN MACROS (igual que antes) ======= */
+    #macrosContainer .macros-list {
+      display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;
+    }
+    #macrosContainer .macro-item {
+      border: 1px solid #ccc; border-radius: 6px; padding: 10px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    #macrosContainer .macro-item button {
+      background: none; border: none; cursor: pointer; color: #4a90e2; font-weight: 600; margin-left: 10px;
+    }
+    #macrosContainer .macro-item button:hover {
+      color: #1a2e55;
+    }
+    #macrosContainer .create-macro {
+      display: flex; gap: 0.5rem; margin-top: 1rem; align-items: center;
+    }
+    #macrosContainer .create-macro input {
+      border: 1px solid #ccc; border-radius: 6px; padding: 6px 10px;
+      flex: 1; max-width: 300px;
+    }
+    #macrosContainer .create-macro button {
+      background-color: #f1c40f; color: #1a2e55; border: none; border-radius: 6px; padding: 8px 12px; font-weight: 600; cursor: pointer;
+    }
+    #macrosContainer .create-macro button:hover {
+      background-color: #1a2e55; color: #f1c40f;
+    }
+    #macrosContainer .register-children-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+    }
+    #macrosContainer .macro-title {
+      font-size: 1.1rem; font-weight: 600; color: #4a90e2;
+    }
+    #macrosContainer .form-section {
+      display: flex; flex-direction: column; max-width: 400px; gap: 0.5rem; margin-bottom: 1rem;
+    }
+    #macrosContainer .form-section label {
+      font-weight: 600;
+    }
+    #macrosContainer .form-section input {
+      border: 1px solid #ccc; border-radius: 6px; padding: 6px 10px; max-width: 220px;
+    }
+    #macrosContainer .child-table {
+      width: 100%; border-collapse: collapse; margin-top: 1rem;
+    }
+    #macrosContainer .child-table thead {
+      background-color: #f1c40f; color: #1a2e55;
+    }
+    #macrosContainer .child-table th,
+    #macrosContainer .child-table td {
+      border: 1px solid #ddd; padding: 8px; text-align: left;
+    }
+    #macrosContainer .actions {
+      margin-top: 1rem; display: flex; gap: 1rem;
+    }
+    #macrosContainer .actions button {
+      background-color: #f1c40f; color: #1a2e55; border: none; border-radius: 6px; padding: 8px 12px; font-weight: 600; cursor: pointer;
+    }
+    #macrosContainer .actions button:hover {
+      background-color: #1a2e55; color: #f1c40f;
+    }
+
+    /* ======= ADMIN SERVICES (igual, con "Matrícula" etc) ======= */
+    #servicesContainer .services-list {
+      display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;
+    }
+    #servicesContainer .service-item {
+      border: 1px solid #ccc; border-radius: 6px; padding: 10px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    #servicesContainer .service-item button {
+      background: none; border: none; cursor: pointer; color: #4a90e2; font-weight: 600; margin-left: 10px;
+    }
+    #servicesContainer .service-item button:hover {
+      color: #1a2e55;
+    }
+    #servicesContainer .create-service {
+      display: flex; gap: 0.5rem; margin-top: 1rem; align-items: center;
+    }
+    #servicesContainer .create-service input {
+      border: 1px solid #ccc; border-radius: 6px; padding: 6px 10px;
+      flex: 1; max-width: 300px;
+    }
+    #servicesContainer .create-service button {
+      background-color: #f1c40f; color: #1a2e55; border: none; border-radius: 6px; padding: 8px 12px; font-weight: 600; cursor: pointer;
+    }
+    #servicesContainer .create-service button:hover {
+      background-color: #1a2e55; color: #f1c40f;
+    }
+    #servicesContainer .variants-form {
+      display: flex; flex-direction: column; max-width: 400px; gap: 0.5rem; margin-top: 1rem;
+    }
+    #servicesContainer .days-container {
+      display: flex; gap: 6px; margin: 6px 0;
+    }
+    .day-btn {
+      background-color: #4a90e2; color: white; border: none; border-radius: 6px;
+      padding: 6px 12px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+    }
+    .day-btn.selected {
+      background-color: #f1c40f; color: #1a2e55;
+    }
+    #servicesContainer .variants-table {
+      width: 100%; border-collapse: collapse; margin-top: 1rem;
+    }
+    #servicesContainer .variants-table thead {
+      background-color: #f1c40f; color: #1a2e55;
+    }
+    #servicesContainer .variants-table th, 
+    #servicesContainer .variants-table td {
+      border: 1px solid #ddd; padding: 8px;
+    }
+    #servicesContainer .children-table {
+      width: 100%; border-collapse: collapse; margin-top: 1rem;
+    }
+    #servicesContainer .children-table thead {
+      background-color: #f1c40f; color: #1a2e55;
+    }
+    #servicesContainer .children-table th,
+    #servicesContainer .children-table td {
+      border: 1px solid #ddd; padding: 8px; text-align: left;
+    }
+
+    /* ======= ADMINISTRADOR DE MATRÍCULAS ======= */
+    #matriculasContainer .tabs-bar {
+      background-color: #1a2e55;
+      border-radius: 6px 6px 0 0;
+      color: #fff;
+      padding: 14px;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    #matriculasContainer .filter-section {
+      margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center;
+    }
+    #matriculasContainer .matriculas-list-table {
+      width: 100%; border-collapse: collapse;
+    }
+    #matriculasContainer .matriculas-list-table thead {
+      background-color: #f1c40f; color: #1a2e55;
+    }
+    #matriculasContainer .matriculas-list-table th,
+    #matriculasContainer .matriculas-list-table td {
+      border: 1px solid #ddd; padding: 8px; text-align: left;
+    }
+    /* Ficha / Pensiones con style */
+    .ficha-btn, .pension-btn {
+      border: none;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      padding: 6px 10px;
+      outline: none;
+    }
+
+    /* ========== FICHA INFORMATIVA ========== */
+    #fichaInformativaPanel {
+      display: none;
+      background-color: #fff;
+      width: 85%;
+      max-width: 1100px;
+      border: none;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin: 20px auto;
+      position: relative;
+      padding: 20px;
+      padding-bottom: 60px; 
+    }
+    #fichaInformativaPanel .bottom-left-btn {}
+    #fichaInformativaPanel h2 {
+      margin-bottom: 1rem;
+    }
+    #fichaInformativaPanel .section-title {
+      font-weight: 600; font-size: 1.1rem; margin-top: 1rem; color: #1a2e55;
+    }
+    .form-field {
+      margin-bottom: 8px; display: flex; flex-direction: column; max-width: 400px;
+    }
+    .form-field label {
+      font-weight: 600; margin-bottom: 2px;
+    }
+    .form-field input[type='text'],
+    .form-field input[type='number'],
+    .form-field textarea {
+      border: 1px solid #ccc; border-radius: 6px; padding: 6px 8px; max-width: 350px;
+    }
+    .form-field select, .form-field input[type='date'] {
+      border: 1px solid #ccc; border-radius: 6px; padding: 6px 8px; max-width: 200px;
+    }
+    .finish-btn {
+      background-color: #f1c40f; color: #1a2e55; border: none; border-radius: 6px; 
+      padding: 8px 12px; font-weight: 600; cursor: pointer; margin-top: 1rem;
+    }
+    .finish-btn:hover {
+      background-color: #1a2e55; color: #f1c40f;
+    }
+    .subsection {
+      border: 1px solid #ddd; border-radius: 6px; padding: 10px; margin-top: 10px; 
+    }
+    .subsection h4 {
+      margin-bottom: 5px;
+    }
+    .edit-section-btn {
+      background: #4a90e2; color: #fff; border: none; border-radius: 6px; padding: 5px 8px; font-weight: 600; margin-left: 10px; cursor: pointer;
+    }
+    .edit-section-btn:hover {
+      background-color: #1a2e55;
+    }
   </style>
 </head>
 <body>
@@ -270,8 +567,8 @@
 
 <script>
 /**************************************************************
- * Ahora, en vez de usar localStorage, usaremos un servidor basado en Google Sheets.
- * Se han modificado las funciones fetchData() y saveData() para utilizar la URL de tu web app.
+ * AHORA, en vez de localStorage, usaremos un servidor basado en Google Sheets.
+ * Se mantienen exactamente las mismas funciones y nombres, solo se cambian las llamadas a fetch.
  **************************************************************/
 let serverData = {
   macros: [],
@@ -283,7 +580,7 @@ let serverData = {
   nextServiceChildId: 1
 };
 
-// URL de tu Apps Script desplegado (ya lo proporcionaste)
+// URL de tu Apps Script desplegado (la proporcionaste)
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2HBppuO-8VPi2kqWLO4SkbDhsh_Po2O7V-B_qaLJ0U3S7RKkKm0ynKA4CDlx_HSUGKg/exec";
 
 // Función para LEER la data del servidor (Google Sheets):
@@ -309,13 +606,13 @@ function saveAllDataToServer() {
   })
   .then(res => res.json())
   .then(r => {
-    // Opcional: console.log("Datos guardados:", r);
+    // opcional: console.log("Datos guardados:", r);
   })
   .catch(err => console.error("Error al guardar en el servidor", err));
 }
 
 /**************************************************************
- * GLOBAL: Stack de pantallas y funciones de navegación
+ * GLOBAL Stack de pantallas y funciones
  **************************************************************/
 let screenStack = ["landing"];
 
@@ -347,6 +644,7 @@ function goToMatriculas(){
 function goBack(){
   screenStack.pop();
   const current = screenStack[screenStack.length-1];
+  // oculta todos
   document.getElementById('landingPage').classList.add('hidden');
   document.getElementById('macrosContainer')?.classList.remove('activeContainer');
   document.getElementById('servicesContainer')?.classList.remove('activeContainer');
@@ -365,7 +663,7 @@ function goBack(){
 }
 
 /**************************************************************
- * MACROS CODE (adaptado para usar serverData)
+ * MACROS CODE (igual que antes, sin variación visual ni funcional)
  **************************************************************/
 let macros = [];
 let nextMacroId = 1;
@@ -624,7 +922,7 @@ function generarTxt(){
 }
 
 /**************************************************************
- * ADMIN SERVICES (sin localStorage, usando serverData)
+ * ADMIN SERVICES (lo mismo, sin modificación visual o funcional)
  **************************************************************/
 let services = [];
 let nextServiceId = 1;
@@ -888,7 +1186,7 @@ function doneVariants(){
   saveToLocalStorageServices();
 }
 
-/* Administrar Niños en Servicios */
+/* Administrar Niños */
 let editingServiceChildId = null;
 function openServiceChildren(serviceId){
   editingServiceId = serviceId;
@@ -899,9 +1197,11 @@ function openServiceChildren(serviceId){
   document.getElementById('currentServiceTitleChild').textContent = serv.title;
   clearChildForm();
   renderChildrenTable(serv.children);
+
   const lab = document.getElementById('labelVariantChild');
   if(serv.title === 'Matrícula') lab.textContent = 'Año';
   else lab.textContent = 'Variante';
+
   const sel = document.getElementById('childVariantSelect');
   sel.innerHTML = '';
   if(serv.variants.length === 0){
@@ -963,6 +1263,7 @@ function agregarOguardarChild(){
   }
   const serv = services.find(s => s.id === editingServiceId);
   if(!serv) return;
+
   const name = document.getElementById('childName').value.trim().toUpperCase();
   const lastname = document.getElementById('childLastname').value.trim().toUpperCase();
   const dateIn = document.getElementById('childDate').value;
@@ -975,10 +1276,12 @@ function agregarOguardarChild(){
   } else if(sel.disabled && serv.variants.length === 1){
     variantId = serv.variants[0].id;
   }
+
   if(!name || !lastname || !dateIn){
     alert('Completa todos los campos');
     return;
   }
+
   if(editingServiceChildId === null){
     const nuevo = {
       id: nextServiceChildId++,
@@ -1373,6 +1676,7 @@ function createFichaForm(ch, container){
     sec2.style.display = 'none';
     sec3.style.display = 'none';
   }
+
   const btnFinish = document.createElement('button');
   btnFinish.className = 'finish-btn';
   btnFinish.textContent = 'Guardar';
