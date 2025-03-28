@@ -1,0 +1,1466 @@
+<!DOCTYPE html> 
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Menú Principal</title>
+  <!-- Fuente Poppins -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* (Se mantiene el estilo original tal como lo proporcionaste) */
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background-color: #e5efff; min-height: 100vh; }
+    .hidden { display: none !important; }
+    .active { display: block !important; }
+    /* LANDING PAGE */
+    #landingPage { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+    #landingPage h1 { font-size: 1.8rem; margin-bottom: 1rem; color: #1a2e55; }
+    .landing-buttons { display: flex; gap: 1rem; }
+    .landing-buttons button { background-color: #f1c40f; color: #1a2e55; border: none; border-radius: 6px; padding: 12px 18px; font-weight: 600; cursor: pointer; font-size: 1rem; transition: background-color 0.2s; }
+    .landing-buttons button:hover { background-color: #1a2e55; color: #f1c40f; }
+    /* Contenedor genérico */
+    .app-container { display: none; background-color: #fff; width: 85%; max-width: 1100px; border: none; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin: 20px auto; position: relative; padding-bottom: 60px; }
+    .activeContainer { display: block !important; }
+    /* Botón Regresar */
+    .bottom-left-btn { position: absolute; bottom: 15px; left: 15px; background-color: #4a90e2; color: #fff; border: none; border-radius: 6px; padding: 8px 12px; font-weight: 600; cursor: pointer; }
+    .bottom-left-btn:hover { background-color: #1a2e55; }
+    /* Tabs */
+    .tabs { display: flex; background-color: #1a2e55; border-radius: 6px 6px 0 0; }
+    .tab { flex: 1; padding: 14px; text-align: center; cursor: pointer; color: #fff; font-weight: 600; transition: background-color 0.2s; }
+    .tab:hover { background-color: #4a90e2; }
+    .tab.activeTab { background-color: #4a90e2; }
+    .tab-content { display: none; padding: 20px; }
+    .tab-content.activeTabContent { display: block; }
+    /* (El resto de estilos se mantiene igual, sin modificaciones) */
+  </style>
+</head>
+<body>
+
+<!-- ========== LANDING PAGE ========== -->
+<div id="landingPage">
+  <h1>Bienvenid@, selecciona qué deseas administrar:</h1>
+  <div class="landing-buttons">
+    <button onclick="goToMacros()">Administrador de Macros</button>
+    <button onclick="goToServices()">Administrador de Servicios</button>
+    <button onclick="goToMatriculas()">Administrador de Matrículas</button>
+  </div>
+</div>
+
+<!-- ========== CONTENEDOR MACROS ========== -->
+<div class="app-container" id="macrosContainer">
+  <button class="bottom-left-btn" onclick="goBack()">Regresar</button>
+  <div class="tabs">
+    <div class="tab activeTab" id="tabMacros" onclick="openTabMacros('Macros')">Administrador de Macros</div>
+    <div class="tab" id="tabNinos" style="display:none;">Registrar Niños</div>
+  </div>
+
+  <div class="tab-content activeTabContent" id="contentMacros">
+    <h2>Administrador de Macros</h2>
+    <p>Aquí puedes ver todas las macros, crear nuevas o gestionarlas.</p>
+    <div class="macros-list" id="macrosList"></div>
+
+    <div class="create-macro">
+      <input type="text" id="tituloMacro" placeholder="Título de la nueva macro..." />
+      <button onclick="crearMacro()">Crear Macro</button>
+    </div>
+  </div>
+
+  <div class="tab-content" id="contentNinos">
+    <div class="register-children-header">
+      <h2>Registrar Niños</h2>
+      <span class="macro-title" id="currentMacroTitle"></span>
+    </div>
+
+    <div class="form-section">
+      <label>Nombre:</label>
+      <input type="text" id="nombre" placeholder="Ej: ALESSA" />
+
+      <label>Apellidos:</label>
+      <input type="text" id="apellidos" placeholder="Ej: AGURTO HO" />
+
+      <label>Código:</label>
+      <div style="display:flex; align-items:center; gap:5px;">
+        <span id="codigoFijo"></span>
+        <input type="text" id="codigoRestante" placeholder="01" />
+      </div>
+
+      <label>Fecha:</label>
+      <input type="date" id="fechaInscripcion" />
+
+      <label>Importe:</label>
+      <input type="number" id="importe" placeholder="Ej: 50.00" step="0.01" />
+
+      <button onclick="agregarOguardarNino()" id="btnNinoPrincipal">Agregar Niño</button>
+    </div>
+
+    <table class="child-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Apellidos</th>
+          <th>Código</th>
+          <th>Fecha</th>
+          <th>Importe</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tbodyNinos"></tbody>
+    </table>
+
+    <div class="actions">
+      <button onclick="generarTxt()">Generar TXT</button>
+      <button onclick="guardarYVolver()">Guardar y Volver</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CONTENEDOR SERVICIOS ========== -->
+<div class="app-container" id="servicesContainer">
+  <button class="bottom-left-btn" onclick="goBack()">Regresar</button>
+  <div class="tabs">
+    <div class="tab activeTab" id="tabServicesMain" onclick="openTabServices('ServicesMain')">Administrador de Servicios</div>
+    <div class="tab" id="tabServicesVariants" style="display:none;">Creador de Variantes</div>
+    <div class="tab" id="tabServicesChildren" style="display:none;">Administrar Niños</div>
+  </div>
+
+  <div class="tab-content activeTabContent" id="contentServicesMain">
+    <h2>Administrador de Servicios</h2>
+    <p>Aquí puedes ver todos los servicios, crear nuevos o gestionarlos.</p>
+    <div class="services-list" id="servicesList"></div>
+
+    <div class="create-service">
+      <input type="text" id="tituloService" placeholder="Título del nuevo servicio..." />
+      <button onclick="crearService()">Crear Servicio</button>
+    </div>
+  </div>
+
+  <div class="tab-content" id="contentServicesVariants">
+    <h2>Creador de Variantes</h2>
+    <p id="currentServiceTitle" style="font-weight: 600; color:#4a90e2;"></p>
+
+    <div class="variants-form">
+      <label>Nombre de la variante:</label>
+      <input type="text" id="variantName" placeholder="Ej: Ejemplo 1" />
+
+      <label>Precio:</label>
+      <input type="number" id="variantPrice" placeholder="Ej: 100.00" step="0.01" />
+
+      <label>Días de la semana:</label>
+      <div class="days-container" id="daysContainer"></div>
+
+      <div style="display:flex; gap:10px; align-items:center;">
+        <div>
+          <label>Hora de inicio:</label><br/>
+          <input type="time" id="variantStart" />
+        </div>
+        <div>
+          <label>Hora de término:</label><br/>
+          <input type="time" id="variantEnd" />
+        </div>
+      </div>
+
+      <button style="margin-top:10px;" onclick="agregarOguardarVariante()" id="btnVariantPrincipal">Agregar Variante</button>
+    </div>
+
+    <table class="variants-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Días</th>
+          <th>Precio</th>
+          <th>Horario</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tbodyVariants"></tbody>
+    </table>
+
+    <div class="actions">
+      <button onclick="doneVariants()">Listo</button>
+    </div>
+  </div>
+
+  <div class="tab-content" id="contentServicesChildren">
+    <h2>Administrar Niños</h2>
+    <p id="currentServiceTitleChild" style="font-weight:600; color:#4a90e2;"></p>
+
+    <div class="form-section">
+      <label>Nombre:</label>
+      <input type="text" id="childName" placeholder="Ej: JUAN" />
+
+      <label>Apellidos:</label>
+      <input type="text" id="childLastname" placeholder="Ej: PEREZ" />
+
+      <label>Fecha Ingreso:</label>
+      <input type="date" id="childDate" />
+
+      <label id="labelVariantChild">Variante:</label>
+      <select id="childVariantSelect">
+        <!-- Llenado dinámico -->
+      </select>
+
+      <button onclick="agregarOguardarChild()" id="btnChildPrincipal">Agregar Niño</button>
+    </div>
+
+    <table class="children-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Apellidos</th>
+          <th>Fecha</th>
+          <th>Variante</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tbodyChildren"></tbody>
+    </table>
+
+    <div class="actions">
+      <button onclick="doneChildren()">Listo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== ADMINISTRADOR DE MATRÍCULAS ========== -->
+<div class="app-container" id="matriculasContainer">
+  <button class="bottom-left-btn" onclick="goBack()">Regresar</button>
+  <div class="tabs-bar">Administrador de Matrículas</div>
+
+  <div class="filter-section">
+    <label>Año:</label>
+    <select id="filtroAno">
+      <option value="">(Todos)</option>
+      <option value="1">1 año</option>
+      <option value="2">2 años</option>
+      <option value="3">3 años</option>
+      <option value="4">4 años</option>
+      <option value="5">5 años</option>
+    </select>
+
+    <label>Adeudan pensión:</label>
+    <select id="filtroPension">
+      <option value="">(Todos)</option>
+      <option value="SI">Sí</option>
+      <option value="NO">No</option>
+    </select>
+    <button onclick="filtrarMatriculas()">Aplicar Filtro</button>
+  </div>
+
+  <table class="matriculas-list-table">
+    <thead>
+      <tr>
+        <th>Apellidos y Nombres</th>
+        <th>Año</th>
+        <th>Ficha Informativa</th>
+        <th>Pagó Pensión</th>
+        <th>Pensiones Atrasadas</th>
+      </tr>
+    </thead>
+    <tbody id="tbodyMatriculas"></tbody>
+  </table>
+</div>
+
+<!-- ========== FICHA INFORMATIVA ========== -->
+<div id="fichaInformativaPanel">
+  <button class="bottom-left-btn" onclick="goBackFicha()">Regresar</button>
+  <h2>Ficha Informativa</h2>
+  <div id="fichaContent" style="margin-bottom:30px;"></div>
+</div>
+
+<script>
+/**************************************************************
+ * Ahora, en vez de usar localStorage, usaremos un servidor basado en Google Sheets.
+ * Se han modificado las funciones fetchData() y saveData() para utilizar la URL de tu web app.
+ **************************************************************/
+let serverData = {
+  macros: [],
+  nextMacroId: 1,
+  nextAlumnoId: 1,
+  services: [],
+  nextServiceId: 1,
+  nextVariantId: 1,
+  nextServiceChildId: 1
+};
+
+// URL de tu Apps Script desplegado (ya lo proporcionaste)
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2HBppuO-8VPi2kqWLO4SkbDhsh_Po2O7V-B_qaLJ0U3S7RKkKm0ynKA4CDlx_HSUGKg/exec";
+
+// Función para LEER la data del servidor (Google Sheets):
+function fetchAllDataFromServer(callback) {
+  fetch(SCRIPT_URL)
+    .then(res => res.json())
+    .then(json => {
+      serverData = json;
+      if (typeof callback === 'function') callback();
+    })
+    .catch(err => {
+      console.error("Error al obtener data del servidor", err);
+      if (typeof callback === 'function') callback();
+    });
+}
+
+// Función para GUARDAR la data en el servidor (Google Sheets):
+function saveAllDataToServer() {
+  return fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(serverData)
+  })
+  .then(res => res.json())
+  .then(r => {
+    // Opcional: console.log("Datos guardados:", r);
+  })
+  .catch(err => console.error("Error al guardar en el servidor", err));
+}
+
+/**************************************************************
+ * GLOBAL: Stack de pantallas y funciones de navegación
+ **************************************************************/
+let screenStack = ["landing"];
+
+function goToMacros(){
+  fetchAllDataFromServer(() => {
+    document.getElementById('landingPage').classList.add('hidden');
+    document.getElementById('macrosContainer').classList.add('activeContainer');
+    screenStack.push("macros");
+    initMacros();
+  });
+}
+function goToServices(){
+  fetchAllDataFromServer(() => {
+    document.getElementById('landingPage').classList.add('hidden');
+    document.getElementById('servicesContainer').classList.add('activeContainer');
+    screenStack.push("services");
+    initServices();
+  });
+}
+function goToMatriculas(){
+  fetchAllDataFromServer(() => {
+    document.getElementById('landingPage').classList.add('hidden');
+    document.getElementById('matriculasContainer').classList.add('activeContainer');
+    screenStack.push("matriculas");
+    initMatriculas();
+  });
+}
+
+function goBack(){
+  screenStack.pop();
+  const current = screenStack[screenStack.length-1];
+  document.getElementById('landingPage').classList.add('hidden');
+  document.getElementById('macrosContainer')?.classList.remove('activeContainer');
+  document.getElementById('servicesContainer')?.classList.remove('activeContainer');
+  document.getElementById('matriculasContainer')?.classList.remove('activeContainer');
+
+  if(current==="landing"){
+    document.getElementById('landingPage').classList.remove('hidden');
+  } else if(current==="macros"){
+    document.getElementById('macrosContainer').classList.add('activeContainer');
+  } else if(current==="services"){
+    document.getElementById('servicesContainer').classList.add('activeContainer');
+  } else if(current==="matriculas"){
+    document.getElementById('matriculasContainer').classList.add('activeContainer');
+    renderMatriculasList();
+  }
+}
+
+/**************************************************************
+ * MACROS CODE (adaptado para usar serverData)
+ **************************************************************/
+let macros = [];
+let nextMacroId = 1;
+let nextAlumnoId = 1;
+let editingMacroId = null;
+let editingAlumnoId = null;
+let generateCount = 0;
+
+const anioActual = new Date().getFullYear();
+const anioDosDig = anioActual.toString().slice(-2);
+const meses = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
+
+function loadFromLocalStorageMacros(){
+  macros = serverData.macros || [];
+  nextMacroId = serverData.nextMacroId || 1;
+  nextAlumnoId = serverData.nextAlumnoId || 1;
+}
+function saveToLocalStorageMacros(){
+  serverData.macros = macros;
+  serverData.nextMacroId = nextMacroId;
+  serverData.nextAlumnoId = nextAlumnoId;
+  saveAllDataToServer();
+}
+
+function initMacros() {
+  loadFromLocalStorageMacros();
+  mostrarMacros();
+}
+function openTabMacros(tabName){
+  document.getElementById('contentMacros').classList.remove('activeTabContent');
+  document.getElementById('contentNinos').classList.remove('activeTabContent');
+  document.getElementById('tabMacros').classList.remove('activeTab');
+  document.getElementById('tabNinos').classList.remove('activeTab');
+  if(tabName==='Macros'){
+    document.getElementById('contentMacros').classList.add('activeTabContent');
+    document.getElementById('tabMacros').classList.add('activeTab');
+  } else {
+    document.getElementById('contentNinos').classList.add('activeTabContent');
+    document.getElementById('tabNinos').classList.add('activeTab');
+  }
+}
+function mostrarMacros(){
+  const container = document.getElementById('macrosList');
+  container.innerHTML = '';
+  macros.forEach(m=>{
+    const div = document.createElement('div');
+    div.className = 'macro-item';
+    const leftSpan = document.createElement('span');
+    leftSpan.textContent = `${m.titulo} (Alumnos: ${m.alumnos.length})`;
+    const rightDiv = document.createElement('div');
+    const btnEdit = document.createElement('button');
+    btnEdit.textContent = 'Editar';
+    btnEdit.onclick = () => editarMacro(m.id);
+    const btnDel = document.createElement('button');
+    btnDel.textContent = 'Eliminar';
+    btnDel.onclick = () => eliminarMacro(m.id);
+    rightDiv.appendChild(btnEdit);
+    rightDiv.appendChild(btnDel);
+    div.appendChild(leftSpan);
+    div.appendChild(rightDiv);
+    container.appendChild(div);
+  });
+}
+function crearMacro(){
+  const titulo = document.getElementById('tituloMacro').value.trim();
+  if(!titulo){
+    alert('Ingresa un título para la macro');
+    return;
+  }
+  const nueva = { id: nextMacroId++, titulo, alumnos: [] };
+  macros.push(nueva);
+  document.getElementById('tituloMacro').value = '';
+  mostrarMacros();
+  saveToLocalStorageMacros();
+  editarMacro(nueva.id);
+}
+function editarMacro(macroId){
+  editingMacroId = macroId;
+  const mac = macros.find(m => m.id === macroId);
+  if(!mac){
+    alert('Macro no encontrada');
+    return;
+  }
+  openTabMacros('Ninos');
+  document.getElementById('currentMacroTitle').textContent = mac.titulo;
+  mostrarAlumnosEnTablaMacros(mac.alumnos);
+}
+function eliminarMacro(macroId){
+  if(!confirm('¿Seguro de eliminar esta macro?')) return;
+  macros = macros.filter(m => m.id !== macroId);
+  mostrarMacros();
+  saveToLocalStorageMacros();
+}
+function mostrarAlumnosEnTablaMacros(arr){
+  const tbody = document.getElementById('tbodyNinos');
+  tbody.innerHTML = '';
+  arr.forEach(al => {
+    const row = tbody.insertRow();
+    row.insertCell(0).textContent = al.nombre;
+    row.insertCell(1).textContent = al.apellidos;
+    row.insertCell(2).textContent = `CJ${anioDosDig}${al.codigoRestante}`;
+    row.insertCell(3).textContent = al.fechaInscripcion;
+    row.insertCell(4).textContent = al.importe.toFixed(2);
+    const accCell = row.insertCell(5);
+    const btnE = document.createElement('button');
+    btnE.textContent = '✎';
+    btnE.onclick = () => editarNinoMacros(al.id);
+    accCell.appendChild(btnE);
+    const btnD = document.createElement('button');
+    btnD.textContent = '🗑️';
+    btnD.style.marginLeft = '5px';
+    btnD.onclick = () => eliminarAlumnoMacros(al.id);
+    accCell.appendChild(btnD);
+  });
+}
+function agregarOguardarNino(){
+  if(!editingMacroId){
+    alert('No hay una macro seleccionada.');
+    return;
+  }
+  const mac = macros.find(m => m.id === editingMacroId);
+  if(!mac){
+    alert('Macro no encontrada');
+    return;
+  }
+  const nombre = document.getElementById('nombre').value.trim().toUpperCase();
+  const apellidos = document.getElementById('apellidos').value.trim().toUpperCase();
+  const codigoRestante = document.getElementById('codigoRestante').value.trim().toUpperCase();
+  const fechaInscripcion = document.getElementById('fechaInscripcion').value;
+  const importe = parseFloat(document.getElementById('importe').value);
+  if(!nombre || !apellidos || !codigoRestante || !fechaInscripcion || isNaN(importe)){
+    alert('Completa todos los campos');
+    return;
+  }
+  if(editingAlumnoId === null){
+    const nuevo = {
+      id: nextAlumnoId++,
+      nombre,
+      apellidos,
+      codigoRestante,
+      fechaInscripcion,
+      importe
+    };
+    mac.alumnos.push(nuevo);
+  } else {
+    const idx = mac.alumnos.findIndex(a => a.id === editingAlumnoId);
+    if(idx >= 0){
+      mac.alumnos[idx].nombre = nombre;
+      mac.alumnos[idx].apellidos = apellidos;
+      mac.alumnos[idx].codigoRestante = codigoRestante;
+      mac.alumnos[idx].fechaInscripcion = fechaInscripcion;
+      mac.alumnos[idx].importe = importe;
+    }
+    editingAlumnoId = null;
+    document.getElementById('btnNinoPrincipal').textContent = 'Agregar Niño';
+  }
+  document.getElementById('nombre').value = '';
+  document.getElementById('apellidos').value = '';
+  document.getElementById('codigoRestante').value = '';
+  document.getElementById('fechaInscripcion').value = '';
+  document.getElementById('importe').value = '';
+  mostrarAlumnosEnTablaMacros(mac.alumnos);
+  saveToLocalStorageMacros();
+}
+function editarNinoMacros(alumnoId){
+  const mac = macros.find(m => m.id === editingMacroId);
+  if(!mac) return;
+  const al = mac.alumnos.find(a => a.id === alumnoId);
+  if(!al) return;
+  editingAlumnoId = alumnoId;
+  document.getElementById('nombre').value = al.nombre;
+  document.getElementById('apellidos').value = al.apellidos;
+  document.getElementById('codigoRestante').value = al.codigoRestante;
+  document.getElementById('fechaInscripcion').value = al.fechaInscripcion;
+  document.getElementById('importe').value = al.importe;
+  document.getElementById('btnNinoPrincipal').textContent = 'Guardar Niño';
+}
+function eliminarAlumnoMacros(alumnoId){
+  const mac = macros.find(m => m.id === editingMacroId);
+  if(!mac) return;
+  mac.alumnos = mac.alumnos.filter(a => a.id !== alumnoId);
+  mostrarAlumnosEnTablaMacros(mac.alumnos);
+  saveToLocalStorageMacros();
+}
+function guardarYVolver(){
+  openTabMacros('Macros');
+  mostrarMacros();
+  saveToLocalStorageMacros();
+}
+function generarTxt(){
+  if(!editingMacroId){
+    alert('No hay macro seleccionada.');
+    return;
+  }
+  const mac = macros.find(m => m.id === editingMacroId);
+  if(!mac){
+    alert('Macro no encontrada');
+    return;
+  }
+  generateCount++;
+  const hoy = new Date();
+  const fechaFact = hoy.getFullYear().toString() +
+                    String(hoy.getMonth()+1).padStart(2,'0') +
+                    String(hoy.getDate()).padStart(2,'0');
+  const ruc = '00018176347';
+  const moneda = 'PEN';
+  const numeroClase = '000';
+  const tipoActu = 'P';
+  let cabecera = '01' + ruc + numeroClase + moneda + fechaFact + '001' + ' '.repeat(7) + tipoActu + ' '.repeat(322) + '\r\n';
+  let contenido = cabecera;
+  const anioSiguiente = hoy.getFullYear() + 1;
+  const fechaBloqueo = `${anioSiguiente}0930`;
+  let contadorRegistros = 0;
+  let sumaMin = 0, sumaMax = 0;
+  mac.alumnos.forEach(item => {
+    const fechaObj = new Date(item.fechaInscripcion);
+    const anio = fechaObj.getFullYear();
+    const mesInicio = fechaObj.getMonth();
+    const diaInscripcion = fechaObj.getDate();
+    for(let m = mesInicio; m < 12; m++){
+      const nombreCompleto = (item.apellidos + ' ' + item.nombre).substring(0,30).padEnd(30,' ');
+      const yy = anio.toString().slice(-2);
+      const mesNombre = meses[m];
+      let codigoConc = (`0CJ${yy}${item.codigoRestante}${mesNombre}`).substring(0,40).padEnd(40,' ');
+      const mesStr = String(m+1).padStart(2,'0');
+      const diaStr = String(diaInscripcion).padStart(2,'0');
+      const fechaVenc = `${anio}${mesStr}${diaStr}`;
+      const importeCentavos = Math.round(item.importe * 100);
+      const importeStr = importeCentavos.toString().padStart(15,'0');
+      sumaMin += importeCentavos;
+      sumaMax += importeCentavos;
+      let linea = '02' + nombreCompleto + codigoConc + ' '.repeat(8) +
+                  fechaVenc + fechaBloqueo + '0'.repeat(2) +
+                  importeStr + importeStr + '0'.repeat(180) +
+                  'L000000000000000' + '\r\n';
+      contenido += linea;
+      contadorRegistros++;
+    }
+  });
+  let linea03 = '03';
+  linea03 += String(contadorRegistros).padStart(9,'0');
+  linea03 += String(sumaMin).padStart(18,'0');
+  linea03 += String(sumaMax).padStart(18,'0');
+  linea03 += '0'.repeat(18);
+  linea03 += ' '.repeat(295);
+  contenido += linea03;
+  const filename = `carga_bbva_${fechaFact}_${generateCount}.txt`;
+  const blob = new Blob([contenido], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+/**************************************************************
+ * ADMIN SERVICES (sin localStorage, usando serverData)
+ **************************************************************/
+let services = [];
+let nextServiceId = 1;
+let nextVariantId = 1;
+let nextServiceChildId = 1;
+let serviceCheckDone = false; 
+let MATRICULA_ID = null;
+
+function loadFromLocalStorageServices(){
+  services = serverData.services || [];
+  nextServiceId = serverData.nextServiceId || 1;
+  nextVariantId = serverData.nextVariantId || 1;
+  nextServiceChildId = serverData.nextServiceChildId || 1;
+}
+function saveToLocalStorageServices(){
+  serverData.services = services;
+  serverData.nextServiceId = nextServiceId;
+  serverData.nextVariantId = nextVariantId;
+  serverData.nextServiceChildId = nextServiceChildId;
+  saveAllDataToServer();
+}
+
+function initServices(){
+  loadFromLocalStorageServices();
+  ensureMatriculaService();
+  showServicesList();
+  setupDaysButtons();
+}
+function ensureMatriculaService(){
+  if(serviceCheckDone) return;
+  serviceCheckDone = true;
+  let mat = services.find(s => s.title === 'Matrícula');
+  if(!mat){
+    mat = {
+      id: nextServiceId++,
+      title: 'Matrícula',
+      variants: [],
+      children: []
+    };
+    services.unshift(mat);
+    for(let i = 1; i <= 5; i++){
+      const v = {
+        id: nextVariantId++,
+        name: i.toString(),
+        price: 480,
+        days: ['LUN','MAR','MIE','JUE','VIE'],
+        start: '07:30',
+        end: '13:00'
+      };
+      mat.variants.push(v);
+    }
+    saveToLocalStorageServices();
+  }
+  MATRICULA_ID = mat.id;
+}
+function openTabServices(tabName){
+  document.getElementById('contentServicesMain').classList.remove('activeTabContent');
+  document.getElementById('contentServicesVariants').classList.remove('activeTabContent');
+  document.getElementById('contentServicesChildren').classList.remove('activeTabContent');
+  document.getElementById('tabServicesMain').classList.remove('activeTab');
+  document.getElementById('tabServicesVariants').classList.remove('activeTab');
+  document.getElementById('tabServicesChildren').classList.remove('activeTab');
+  if(tabName==='ServicesMain'){
+    document.getElementById('contentServicesMain').classList.add('activeTabContent');
+    document.getElementById('tabServicesMain').classList.add('activeTab');
+  } else if(tabName==='ServicesVariants'){
+    document.getElementById('contentServicesVariants').classList.add('activeTabContent');
+    document.getElementById('tabServicesVariants').classList.add('activeTab');
+  } else {
+    document.getElementById('contentServicesChildren').classList.add('activeTabContent');
+    document.getElementById('tabServicesChildren').classList.add('activeTab');
+  }
+}
+function showServicesList(){
+  const container = document.getElementById('servicesList');
+  container.innerHTML = '';
+  services.sort((a,b) => {
+    if(a.title==='Matrícula') return -1;
+    if(b.title==='Matrícula') return 1;
+    return 0;
+  });
+  services.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'service-item';
+    const leftSpan = document.createElement('span');
+    leftSpan.textContent = `${s.title} (Variantes: ${s.variants.length}) (Niños: ${s.children.length})`;
+    const rightDiv = document.createElement('div');
+    if(s.title !== 'Matrícula'){
+      const btnEdit = document.createElement('button');
+      btnEdit.textContent = 'Editar';
+      btnEdit.onclick = () => editService(s.id);
+      rightDiv.appendChild(btnEdit);
+    }
+    const btnMat = document.createElement('button');
+    btnMat.textContent = 'Administrar Niños';
+    btnMat.onclick = () => openServiceChildren(s.id);
+    rightDiv.appendChild(btnMat);
+    if(s.title !== 'Matrícula'){
+      const btnDel = document.createElement('button');
+      btnDel.textContent = 'Eliminar';
+      btnDel.onclick = () => deleteService(s.id);
+      rightDiv.appendChild(btnDel);
+    }
+    div.appendChild(leftSpan);
+    div.appendChild(rightDiv);
+    container.appendChild(div);
+  });
+}
+function crearService(){
+  const title = document.getElementById('tituloService').value.trim();
+  if(!title){
+    alert('Ingresa un título para el servicio');
+    return;
+  }
+  if(title === 'Matrícula'){
+    alert('Ya existe "Matrícula"');
+    return;
+  }
+  const newService = { id: nextServiceId++, title, variants: [], children: [] };
+  services.push(newService);
+  document.getElementById('tituloService').value = '';
+  showServicesList();
+  saveToLocalStorageServices();
+  editService(newService.id);
+}
+function editService(serviceId){
+  const serv = services.find(s => s.id === serviceId);
+  if(!serv) return;
+  if(serv.title === 'Matrícula'){
+    alert('No se puede editar el servicio "Matrícula"');
+    return;
+  }
+  editingServiceId = serviceId;
+  openTabServices('ServicesVariants');
+  document.getElementById('tabServicesVariants').style.display = 'block';
+  document.getElementById('currentServiceTitle').textContent = serv.title;
+  clearVariantForm();
+  renderVariantsTable(serv.variants);
+}
+function deleteService(serviceId){
+  if(!confirm('¿Seguro de eliminar este servicio?')) return;
+  services = services.filter(s => s.id !== serviceId);
+  showServicesList();
+  saveToLocalStorageServices();
+}
+let editingVariantId = null;
+function setupDaysButtons(){
+  const dayLabels = ['LUN','MAR','MIE','JUE','VIE'];
+  const container = document.getElementById('daysContainer');
+  container.innerHTML = '';
+  dayLabels.forEach(d => {
+    const btn = document.createElement('button');
+    btn.className = 'day-btn';
+    btn.textContent = d;
+    btn.onclick = () => btn.classList.toggle('selected');
+    container.appendChild(btn);
+  });
+}
+function clearVariantForm(){
+  editingVariantId = null;
+  document.getElementById('variantName').value = '';
+  document.getElementById('variantPrice').value = '';
+  document.getElementById('variantStart').value = '';
+  document.getElementById('variantEnd').value = '';
+  document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('btnVariantPrincipal').textContent = 'Agregar Variante';
+}
+function agregarOguardarVariante(){
+  if(!editingServiceId){
+    alert('No hay servicio seleccionado.');
+    return;
+  }
+  const serv = services.find(s => s.id === editingServiceId);
+  if(!serv){
+    alert('Servicio no encontrado');
+    return;
+  }
+  const name = document.getElementById('variantName').value.trim();
+  const price = parseFloat(document.getElementById('variantPrice').value);
+  const startT = document.getElementById('variantStart').value;
+  const endT = document.getElementById('variantEnd').value;
+  const selectedDays = [];
+  document.querySelectorAll('.day-btn.selected').forEach(btn => selectedDays.push(btn.textContent));
+  if(!name || isNaN(price) || !startT || !endT){
+    alert('Completa todos los campos de la variante');
+    return;
+  }
+  if(editingVariantId === null){
+    const newVar = {
+      id: nextVariantId++,
+      name,
+      price,
+      days: selectedDays,
+      start: startT,
+      end: endT
+    };
+    serv.variants.push(newVar);
+  } else {
+    const idx = serv.variants.findIndex(v => v.id === editingVariantId);
+    if(idx >= 0){
+      serv.variants[idx].name = name;
+      serv.variants[idx].price = price;
+      serv.variants[idx].days = selectedDays;
+      serv.variants[idx].start = startT;
+      serv.variants[idx].end = endT;
+    }
+    editingVariantId = null;
+    document.getElementById('btnVariantPrincipal').textContent = 'Agregar Variante';
+  }
+  clearVariantForm();
+  renderVariantsTable(serv.variants);
+  saveToLocalStorageServices();
+}
+function renderVariantsTable(arr){
+  const tbody = document.getElementById('tbodyVariants');
+  tbody.innerHTML = '';
+  arr.forEach(v => {
+    const row = tbody.insertRow();
+    row.insertCell(0).textContent = v.name;
+    row.insertCell(1).textContent = v.days.join(', ');
+    row.insertCell(2).textContent = `S/${v.price}`;
+    row.insertCell(3).textContent = `${v.start} - ${v.end}`;
+    const accCell = row.insertCell(4);
+    const btnEd = document.createElement('button');
+    btnEd.textContent = 'editar';
+    btnEd.onclick = () => editVariant(v.id);
+    accCell.appendChild(btnEd);
+    const btnDel = document.createElement('button');
+    btnDel.textContent = ' x ';
+    btnDel.style.marginLeft = '5px';
+    btnDel.onclick = () => deleteVariant(v.id);
+    accCell.appendChild(btnDel);
+  });
+}
+function editVariant(variantId){
+  const serv = services.find(s => s.id === editingServiceId);
+  if(!serv) return;
+  const vr = serv.variants.find(v => v.id === variantId);
+  if(!vr) return;
+  editingVariantId = variantId;
+  document.getElementById('variantName').value = vr.name;
+  document.getElementById('variantPrice').value = vr.price;
+  document.getElementById('variantStart').value = vr.start;
+  document.getElementById('variantEnd').value = vr.end;
+  document.querySelectorAll('.day-btn').forEach(btn => {
+    if(vr.days.includes(btn.textContent)) btn.classList.add('selected');
+    else btn.classList.remove('selected');
+  });
+  document.getElementById('btnVariantPrincipal').textContent = 'Guardar Variante';
+}
+function deleteVariant(variantId){
+  const serv = services.find(s => s.id === editingServiceId);
+  if(!serv) return;
+  serv.variants = serv.variants.filter(v => v.id !== variantId);
+  renderVariantsTable(serv.variants);
+  saveToLocalStorageServices();
+}
+function doneVariants(){
+  openTabServices('ServicesMain');
+  showServicesList();
+  saveToLocalStorageServices();
+}
+
+/* Administrar Niños en Servicios */
+let editingServiceChildId = null;
+function openServiceChildren(serviceId){
+  editingServiceId = serviceId;
+  const serv = services.find(s => s.id === serviceId);
+  if(!serv) return;
+  openTabServices('ServicesChildren');
+  document.getElementById('tabServicesChildren').style.display = 'block';
+  document.getElementById('currentServiceTitleChild').textContent = serv.title;
+  clearChildForm();
+  renderChildrenTable(serv.children);
+  const lab = document.getElementById('labelVariantChild');
+  if(serv.title === 'Matrícula') lab.textContent = 'Año';
+  else lab.textContent = 'Variante';
+  const sel = document.getElementById('childVariantSelect');
+  sel.innerHTML = '';
+  if(serv.variants.length === 0){
+    const opt = document.createElement('option');
+    opt.text = 'Sin variantes';
+    sel.add(opt);
+    sel.disabled = true;
+  } else if(serv.variants.length === 1){
+    sel.disabled = true;
+    const v = serv.variants[0];
+    const opt = document.createElement('option');
+    opt.value = v.id;
+    opt.textContent = v.name;
+    sel.add(opt);
+  } else {
+    sel.disabled = false;
+    serv.variants.forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v.id;
+      opt.textContent = v.name;
+      sel.appendChild(opt);
+    });
+  }
+}
+function clearChildForm(){
+  editingServiceChildId = null;
+  document.getElementById('childName').value = '';
+  document.getElementById('childLastname').value = '';
+  document.getElementById('childDate').value = '';
+  document.getElementById('btnChildPrincipal').textContent = 'Agregar Niño';
+}
+function renderChildrenTable(arr){
+  const tbody = document.getElementById('tbodyChildren');
+  tbody.innerHTML = '';
+  const serv = services.find(s => s.id === editingServiceId);
+  arr.forEach(ch => {
+    const row = tbody.insertRow();
+    row.insertCell(0).textContent = ch.name;
+    row.insertCell(1).textContent = ch.lastname;
+    row.insertCell(2).textContent = ch.date;
+    const variant = serv.variants.find(v => v.id === ch.variantId);
+    row.insertCell(3).textContent = variant ? variant.name : 'Sin variante';
+    const accCell = row.insertCell(4);
+    const btnEd = document.createElement('button');
+    btnEd.textContent = '✎';
+    btnEd.onclick = () => editServiceChild(ch.id);
+    accCell.appendChild(btnEd);
+    const btnDel = document.createElement('button');
+    btnDel.textContent = '🗑️';
+    btnDel.style.marginLeft = '5px';
+    btnDel.onclick = () => deleteServiceChild(ch.id);
+    accCell.appendChild(btnDel);
+  });
+}
+function agregarOguardarChild(){
+  if(!editingServiceId){
+    alert('No hay servicio seleccionado');
+    return;
+  }
+  const serv = services.find(s => s.id === editingServiceId);
+  if(!serv) return;
+  const name = document.getElementById('childName').value.trim().toUpperCase();
+  const lastname = document.getElementById('childLastname').value.trim().toUpperCase();
+  const dateIn = document.getElementById('childDate').value;
+  const sel = document.getElementById('childVariantSelect');
+  let variantId = null;
+  if(sel.options.length === 1 && !sel.disabled){
+    variantId = parseInt(sel.options[0].value);
+  } else if(!sel.disabled){
+    variantId = parseInt(sel.value);
+  } else if(sel.disabled && serv.variants.length === 1){
+    variantId = serv.variants[0].id;
+  }
+  if(!name || !lastname || !dateIn){
+    alert('Completa todos los campos');
+    return;
+  }
+  if(editingServiceChildId === null){
+    const nuevo = {
+      id: nextServiceChildId++,
+      name,
+      lastname,
+      date: dateIn,
+      variantId,
+      ficha: {},
+      fichaCompleta: false,
+      pagoPension: false,
+      pensionesAtrasadas: 0,
+      lastPagoCheck: getYearMonth()
+    };
+    serv.children.push(nuevo);
+  } else {
+    const idx = serv.children.findIndex(c => c.id === editingServiceChildId);
+    if(idx >= 0){
+      serv.children[idx].name = name;
+      serv.children[idx].lastname = lastname;
+      serv.children[idx].date = dateIn;
+      serv.children[idx].variantId = variantId;
+    }
+    editingServiceChildId = null;
+    document.getElementById('btnChildPrincipal').textContent = 'Agregar Niño';
+  }
+  clearChildForm();
+  renderChildrenTable(serv.children);
+  saveToLocalStorageServices();
+}
+function editServiceChild(childId){
+  const serv = services.find(s => s.id === editingServiceId);
+  if(!serv) return;
+  const ch = serv.children.find(c => c.id === childId);
+  if(!ch) return;
+  editingServiceChildId = childId;
+  document.getElementById('childName').value = ch.name;
+  document.getElementById('childLastname').value = ch.lastname;
+  document.getElementById('childDate').value = ch.date;
+  document.getElementById('btnChildPrincipal').textContent = 'Guardar Niño';
+  const sel = document.getElementById('childVariantSelect');
+  if(!sel.disabled && ch.variantId) sel.value = ch.variantId;
+}
+function deleteServiceChild(childId){
+  const serv = services.find(s => s.id === editingServiceId);
+  if(!serv) return;
+  serv.children = serv.children.filter(c => c.id !== childId);
+  renderChildrenTable(serv.children);
+  saveToLocalStorageServices();
+}
+function doneChildren(){
+  openTabServices('ServicesMain');
+  showServicesList();
+  saveToLocalStorageServices();
+}
+
+/**************************************************************
+ * ADMIN MATRÍCULAS
+ **************************************************************/
+function initMatriculas(){
+  loadFromLocalStorageServices();
+  ensureMatriculaService();
+  monthlyPensionCheck();
+  renderMatriculasList();
+}
+function monthlyPensionCheck(){
+  const matServ = services.find(s => s.title === 'Matrícula');
+  if(!matServ) return;
+  const currentYM = getYearMonth();
+  matServ.children.forEach(ch => {
+    if(ch.lastPagoCheck && ch.lastPagoCheck !== currentYM){
+      if(!ch.pagoPension){
+        ch.pensionesAtrasadas = (ch.pensionesAtrasadas || 0) + 1;
+      }
+      ch.pagoPension = false;
+      ch.lastPagoCheck = currentYM;
+    }
+  });
+  saveToLocalStorageServices();
+}
+function renderMatriculasList(){
+  const matServ = services.find(s => s.title === 'Matrícula');
+  if(!matServ) return;
+  const tbody = document.getElementById('tbodyMatriculas');
+  tbody.innerHTML = '';
+  matServ.children.forEach(ch => {
+    const row = tbody.insertRow();
+    row.insertCell(0).textContent = `${ch.lastname} ${ch.name}`.trim();
+    row.insertCell(1).textContent = getVariantName(ch.variantId) || '';
+    const cellF = row.insertCell(2);
+    const btnF = document.createElement('button');
+    btnF.className = 'ficha-btn';
+    btnF.style.fontWeight = '600';
+    btnF.style.borderRadius = '8px';
+    if(ch.fichaCompleta){
+      btnF.style.backgroundColor = '#3BB273'; 
+      btnF.style.color = '#fff';
+    } else {
+      btnF.style.backgroundColor = '#E74C3C'; 
+      btnF.style.color = '#fff';
+    }
+    btnF.textContent = 'Ficha Informativa';
+    btnF.onclick = () => openFicha(ch);
+    cellF.appendChild(btnF);
+    const cellP = row.insertCell(3);
+    const btnP = document.createElement('button');
+    btnP.className = 'pension-btn';
+    btnP.style.fontWeight = '600';
+    btnP.style.borderRadius = '8px';
+    btnP.style.color = '#fff';
+    if(ch.pagoPension){
+      btnP.style.backgroundColor = '#3BB273';
+      btnP.textContent = 'Sí';
+    } else {
+      btnP.style.backgroundColor = '#E74C3C';
+      btnP.textContent = 'No';
+    }
+    btnP.onclick = () => {
+      ch.pagoPension = !ch.pagoPension;
+      if(ch.pagoPension){
+        btnP.style.backgroundColor = '#3BB273'; 
+        btnP.textContent = 'Sí';
+      } else {
+        btnP.style.backgroundColor = '#E74C3C'; 
+        btnP.textContent = 'No';
+      }
+      saveToLocalStorageServices();
+    };
+    cellP.appendChild(btnP);
+    const cellA = row.insertCell(4);
+    const inputA = document.createElement('input');
+    inputA.type = 'number';
+    inputA.style.width = '60px';
+    inputA.value = ch.pensionesAtrasadas || 0;
+    inputA.onchange = () => {
+      ch.pensionesAtrasadas = parseInt(inputA.value) || 0;
+      saveToLocalStorageServices();
+    };
+    cellA.appendChild(inputA);
+  });
+}
+function filtrarMatriculas(){
+  const valAno = document.getElementById('filtroAno').value;
+  const valPension = document.getElementById('filtroPension').value;
+  const matServ = services.find(s => s.title === 'Matrícula');
+  if(!matServ) return;
+  let arr = [...matServ.children];
+  if(valAno){
+    arr = arr.filter(ch => getVariantName(ch.variantId) === valAno );
+  }
+  if(valPension === 'SI'){
+    arr = arr.filter(ch => (!ch.pagoPension || ch.pensionesAtrasadas > 0));
+  } else if(valPension === 'NO'){
+    arr = arr.filter(ch => (ch.pagoPension && ch.pensionesAtrasadas === 0));
+  }
+  const tbody = document.getElementById('tbodyMatriculas');
+  tbody.innerHTML = '';
+  arr.forEach(ch => {
+    const row = tbody.insertRow();
+    row.insertCell(0).textContent = `${ch.lastname} ${ch.name}`;
+    row.insertCell(1).textContent = getVariantName(ch.variantId) || '';
+    const cellF = row.insertCell(2);
+    const btnF = document.createElement('button');
+    btnF.className = 'ficha-btn';
+    btnF.style.fontWeight = '600';
+    btnF.style.borderRadius = '8px';
+    if(ch.fichaCompleta){
+      btnF.style.backgroundColor = '#3BB273'; 
+      btnF.style.color = '#fff';
+    } else {
+      btnF.style.backgroundColor = '#E74C3C'; 
+      btnF.style.color = '#fff';
+    }
+    btnF.textContent = 'Ficha Informativa';
+    btnF.onclick = () => openFicha(ch);
+    cellF.appendChild(btnF);
+    const cellP = row.insertCell(3);
+    const btnP = document.createElement('button');
+    btnP.className = 'pension-btn';
+    btnP.style.fontWeight = '600';
+    btnP.style.borderRadius = '8px';
+    btnP.style.color = '#fff';
+    if(ch.pagoPension){
+      btnP.style.backgroundColor = '#3BB273'; 
+      btnP.textContent = 'Sí';
+    } else {
+      btnP.style.backgroundColor = '#E74C3C'; 
+      btnP.textContent = 'No';
+    }
+    btnP.onclick = () => {
+      ch.pagoPension = !ch.pagoPension;
+      if(ch.pagoPension){
+        btnP.style.backgroundColor = '#3BB273'; 
+        btnP.textContent = 'Sí';
+      } else {
+        btnP.style.backgroundColor = '#E74C3C'; 
+        btnP.textContent = 'No';
+      }
+      saveToLocalStorageServices();
+    };
+    cellP.appendChild(btnP);
+    const cellA = row.insertCell(4);
+    const inputA = document.createElement('input');
+    inputA.type = 'number';
+    inputA.style.width = '60px';
+    inputA.value = ch.pensionesAtrasadas || 0;
+    inputA.onchange = () => {
+      ch.pensionesAtrasadas = parseInt(inputA.value) || 0;
+      saveToLocalStorageServices();
+    };
+    cellA.appendChild(inputA);
+  });
+}
+function getVariantName(varId){
+  if(!varId) return null;
+  for(const s of services){
+    const fv = s.variants.find(v => v.id === varId);
+    if(fv) return fv.name;
+  }
+  return null;
+}
+function getYearMonth(){
+  const d = new Date();
+  return d.getFullYear().toString() + '-' + String(d.getMonth()+1).padStart(2,'0');
+}
+
+/**************************************************************
+ * FICHA INFORMATIVA
+ **************************************************************/
+let currentFichaChild = null;
+function openFicha(childObj){
+  currentFichaChild = childObj;
+  document.getElementById('matriculasContainer').classList.remove('activeContainer');
+  screenStack.push("ficha");
+  document.getElementById('fichaInformativaPanel').style.display = 'block';
+  renderFicha(childObj);
+}
+function goBackFicha(){
+  screenStack.pop();
+  document.getElementById('fichaInformativaPanel').style.display = 'none';
+  const curr = screenStack[screenStack.length-1];
+  if(curr === "matriculas"){
+    document.getElementById('matriculasContainer').classList.add('activeContainer');
+    renderMatriculasList();
+  } else {
+    goBack(); 
+  }
+}
+
+function renderFicha(ch){
+  const cont = document.getElementById('fichaContent');
+  cont.innerHTML = '';
+  if(!ch.ficha) ch.ficha = {};
+  if(!ch.hasOwnProperty('fichaCompleta')) ch.fichaCompleta = false;
+  if(ch.fichaCompleta){
+    const h3 = document.createElement('h3');
+    h3.textContent = "Ficha Informativa (Completada)";
+    cont.appendChild(h3);
+    cont.innerHTML += createFichaResumenHTML(ch.ficha);
+    const btnEd = document.createElement('button');
+    btnEd.className = 'finish-btn';
+    btnEd.textContent = 'Editar';
+    btnEd.onclick = () => {
+      ch.fichaCompleta = false;
+      renderFicha(ch);
+    };
+    cont.appendChild(btnEd);
+    const btnBack = document.createElement('button');
+    btnBack.className = 'finish-btn';
+    btnBack.style.marginLeft = '10px';
+    btnBack.textContent = 'Regresar';
+    btnBack.onclick = goBackFicha;
+    cont.appendChild(btnBack);
+  } else {
+    createFichaForm(ch, cont);
+  }
+}
+function createFichaResumenHTML(f){
+  let html = "";
+  html += "<h4>Sección 1: Datos del Niño</h4>";
+  html += `<p>DNI: ${f.dni||''}</p>`;
+  html += `<p>Nombre: ${f.nomApeNino||''}</p>`;
+  html += `<p>Fecha Nac: ${f.fechaNacNino||''}</p>`;
+  html += "<hr/>";
+  html += "<h4>Sección 2: Padre</h4>";
+  html += `<p>Apellidos y Nombres: ${f.apellidosPadre||''}</p>`;
+  html += "<hr/>";
+  html += "<h4>Sección 3: Madre</h4>";
+  html += "<hr/>";
+  html += "<h4>Sección 4: Apoderado</h4>";
+  html += "<hr/>";
+  html += "<h4>Sección 5: Info Adicional</h4>";
+  return html;
+}
+function createFichaForm(ch, container){
+  const sec1 = document.createElement('div');
+  sec1.className = 'subsection';
+  let h4_1 = document.createElement('h4');
+  h4_1.textContent = "Sección 1: Datos del Niño";
+  sec1.appendChild(h4_1);
+  sec1.appendChild( makeField("DNI","dni","number",ch.ficha,{required:true}) );
+  sec1.appendChild( makeField("Nombres y Apellidos","nomApeNino","text",ch.ficha,{required:true}) );
+  sec1.appendChild( makeField("Fecha de Nacimiento","fechaNacNino","date",ch.ficha,{required:true}) );
+  sec1.appendChild( makeField("Lugar de Nacimiento","lugarNacNino","text",ch.ficha,{required:true}) );
+  sec1.appendChild( makeField("Edad (en años)","edadNino","number",ch.ficha,{required:true}) );
+  sec1.appendChild( makeField("Sexo","sexoNino","select",ch.ficha,{required:true, options:["Masculino","Femenino","Otro"]}) );
+  sec1.appendChild( makeField("Religión","religionNino","text",ch.ficha,{required:true}) );
+  sec1.appendChild( makeField("Tipo de Parto (Normal/Cesárea)","tipoParto","select",ch.ficha,{required:true,options:["Normal","Cesárea"]}) );
+  sec1.appendChild( makeField("Dirección","direccionNino","text",ch.ficha,{required:true}) );
+  sec1.appendChild( makeField("Nro. de Hermanos","nroHermanos","number",ch.ficha,{required:true}) );
+  sec1.appendChild( makeField("Lugar que Ocupa","lugarEntreHermanos","number",ch.ficha,{required:true}) );
+  sec1.appendChild( makeField("Teléfono (principal)","telPrincipal","text",ch.ficha,{required:true}) );
+  sec1.appendChild( makeField("Teléfono(s) de Emergencia","telEmergencia","text",ch.ficha,{required:true}) );
+  sec1.appendChild( makeField("Centro Médico en caso de urgencia","centroMedico","text",ch.ficha,{required:true}) );
+  sec1.appendChild( makeField("Número de Seguro","numSeguro","text",ch.ficha,{required:true}) );
+  sec1.appendChild( makeField("Tipo de Seguro","tipoSeguro","text",ch.ficha,{required:true}) );
+  sec1.appendChild( makeField("¿Con quién o quiénes vive el menor?","conQuienVive","select",ch.ficha,{
+    required:true,
+    options:["Solo el Padre","Solo la Madre","Ambos Padres","Apoderado"]
+  }) );
+  container.appendChild(sec1);
+
+  const sec2 = document.createElement('div');
+  sec2.className = 'subsection';
+  let hh2 = document.createElement('h4');
+  hh2.textContent = "Sección 2: Datos del Padre";
+  sec2.appendChild(hh2);
+  sec2.appendChild( makeField("Apellidos y Nombres","apellidosPadre","text",ch.ficha,{required:true}) );
+  sec2.appendChild( makeField("DNI (Padre)","dniPadre","number",ch.ficha,{required:true}) );
+  sec2.appendChild( makeField("Fecha de Nacimiento","fechaNacPadre","date",ch.ficha,{required:true}) );
+  sec2.appendChild( makeField("Religión","religionPadre","text",ch.ficha,{required:true}) );
+  sec2.appendChild( makeField("Estado Civil","estadoCivilPadre","text",ch.ficha,{required:true}) );
+  sec2.appendChild( makeField("Grado de Instrucción","gradoInstrPadre","text",ch.ficha,{required:true}) );
+  sec2.appendChild( makeField("¿Vive con el Estudiante?","viveConEstPadre","select",ch.ficha,{required:true,options:["Sí","No"]}) );
+  sec2.appendChild( makeField("Ocupación","ocupPadre","text",ch.ficha,{required:true}) );
+  sec2.appendChild( makeField("Teléfono","telPadre","text",ch.ficha,{required:true}) );
+  sec2.appendChild( makeField("Correo Electrónico","emailPadre","text",ch.ficha,{required:true}) );
+  container.appendChild(sec2);
+
+  const sec3 = document.createElement('div');
+  sec3.className = 'subsection';
+  let hh3 = document.createElement('h4');
+  hh3.textContent = "Sección 3: Datos de la Madre";
+  sec3.appendChild(hh3);
+  sec3.appendChild( makeField("Apellidos y Nombres","apellidosMadre","text",ch.ficha,{required:true}) );
+  sec3.appendChild( makeField("DNI (Madre)","dniMadre","number",ch.ficha,{required:true}) );
+  sec3.appendChild( makeField("Fecha de Nacimiento","fechaNacMadre","date",ch.ficha,{required:true}) );
+  sec3.appendChild( makeField("Religión","religionMadre","text",ch.ficha,{required:true}) );
+  sec3.appendChild( makeField("Estado Civil","estadoCivilMadre","text",ch.ficha,{required:true}) );
+  sec3.appendChild( makeField("Grado de Instrucción","gradoInstrMadre","text",ch.ficha,{required:true}) );
+  sec3.appendChild( makeField("¿Vive con el Estudiante? (Sí / No)","viveConEstMadre","select",ch.ficha,{required:true,options:["Sí","No"]}) );
+  sec3.appendChild( makeField("Ocupación","ocupMadre","text",ch.ficha,{required:true}) );
+  sec3.appendChild( makeField("Teléfono","telMadre","text",ch.ficha,{required:true}) );
+  sec3.appendChild( makeField("Correo Electrónico","emailMadre","text",ch.ficha,{required:true}) );
+  container.appendChild(sec3);
+
+  const sec4 = document.createElement('div');
+  sec4.className = 'subsection';
+  let hh4 = document.createElement('h4');
+  hh4.textContent = "Sección 4: Datos del Apoderado";
+  sec4.appendChild(hh4);
+  sec4.appendChild( makeField("Apellidos y Nombres","apellidosApod","text",ch.ficha,{required:true}) );
+  sec4.appendChild( makeField("DNI","dniApod","number",ch.ficha,{required:true}) );
+  sec4.appendChild( makeField("Fecha de Nacimiento","fechaNacApod","date",ch.ficha,{required:true}) );
+  sec4.appendChild( makeField("Religión","religionApod","text",ch.ficha,{required:true}) );
+  sec4.appendChild( makeField("Estado Civil","estadoCivilApod","text",ch.ficha,{required:true}) );
+  sec4.appendChild( makeField("Grado de Instrucción","gradoInstrApod","text",ch.ficha,{required:true}) );
+  sec4.appendChild( makeField("¿Vive con el Est.? (Sí / No)","viveConEstApod","select",ch.ficha,{required:true,options:["Sí","No"]}) );
+  sec4.appendChild( makeField("Ocupación","ocupApod","text",ch.ficha,{required:true}) );
+  sec4.appendChild( makeField("Teléfono","telApod","text",ch.ficha,{required:true}) );
+  sec4.appendChild( makeField("Correo Electrónico","emailApod","text",ch.ficha,{required:true}) );
+  container.appendChild(sec4);
+
+  const sec5 = document.createElement('div');
+  sec5.className = 'subsection';
+  let hh5 = document.createElement('h4');
+  hh5.textContent = "Sección 5: Información Adicional (Desarrollo/Salud)";
+  sec5.appendChild(hh5);
+  sec5.appendChild( makeField("Complicaciones Durante el Parto (detalles)","complicParto","text",ch.ficha,{required:true}) );
+  sec5.appendChild( makeField("Desarrollo Motriz","desarrolloMotriz","text",ch.ficha,{required:true}) );
+  container.appendChild(sec5);
+
+  let vive = ch.ficha.conQuienVive || '';
+  if(vive === "Solo el Padre"){
+    sec3.style.display = 'none';
+    sec4.style.display = 'none';
+  } else if(vive === "Solo la Madre"){
+    sec2.style.display = 'none';
+    sec4.style.display = 'none';
+  } else if(vive === "Ambos Padres"){
+    sec4.style.display = 'none';
+  } else if(vive === "Apoderado"){
+    sec2.style.display = 'none';
+    sec3.style.display = 'none';
+  }
+  const btnFinish = document.createElement('button');
+  btnFinish.className = 'finish-btn';
+  btnFinish.textContent = 'Guardar';
+  btnFinish.onclick = () => {
+    let missing = checkFichaCompleta(ch);
+    if(missing.length > 0){
+      alert("Faltan campos:\n- " + missing.join("\n- "));
+      return;
+    }
+    ch.fichaCompleta = true;
+    saveToLocalStorageServices();
+    renderFicha(ch);
+  };
+  container.appendChild(btnFinish);
+}
+function makeField(labelText, key, fieldType, fichaObj, opts){
+  const div = document.createElement('div');
+  div.className = 'form-field';
+  const lab = document.createElement('label');
+  lab.textContent = labelText;
+  div.appendChild(lab);
+  let input;
+  if(fieldType === "select"){
+    input = document.createElement('select');
+    (opts.options || []).forEach(o => {
+      let op = document.createElement('option');
+      op.value = o; op.textContent = o;
+      input.appendChild(op);
+    });
+    input.value = fichaObj[key] || opts.options[0];
+    input.onchange = () => fichaObj[key] = input.value;
+  } else if(fieldType === "date"){
+    input = document.createElement('input');
+    input.type = 'date';
+    input.value = fichaObj[key] || '';
+    input.onchange = () => fichaObj[key] = input.value;
+  } else if(fieldType === "number"){
+    input = document.createElement('input');
+    input.type = 'text';
+    input.value = fichaObj[key] || '';
+    input.oninput = (e) => {
+      e.target.value = e.target.value.replace(/[^\d]/g, '');
+      fichaObj[key] = e.target.value;
+    };
+  } else {
+    input = document.createElement('input');
+    input.type = 'text';
+    input.value = fichaObj[key] || '';
+    input.onchange = () => fichaObj[key] = input.value;
+  }
+  div.appendChild(input);
+  if(opts?.required) input.dataset.required = "true";
+  input.dataset.key = key;
+  return div;
+}
+function checkFichaCompleta(ch){
+  let missing = [];
+  let f = ch.ficha;
+  let sec1 = [
+    "dni","nomApeNino","fechaNacNino","lugarNacNino","edadNino","sexoNino","religionNino","tipoParto",
+    "direccionNino","nroHermanos","lugarEntreHermanos","telPrincipal","telEmergencia","centroMedico",
+    "numSeguro","tipoSeguro","conQuienVive"
+  ];
+  let sec2 = ["apellidosPadre","dniPadre","fechaNacPadre","religionPadre","estadoCivilPadre","gradoInstrPadre",
+              "viveConEstPadre","ocupPadre","telPadre","emailPadre"];
+  let sec3 = ["apellidosMadre","dniMadre","fechaNacMadre","religionMadre","estadoCivilMadre","gradoInstrMadre",
+              "viveConEstMadre","ocupMadre","telMadre","emailMadre"];
+  let sec4 = ["apellidosApod","dniApod","fechaNacApod","religionApod","estadoCivilApod","gradoInstrApod",
+              "viveConEstApod","ocupApod","telApod","emailApod"];
+  let sec5 = ["complicParto","desarrolloMotriz"];
+  let vive = f.conQuienVive || "";
+  let needed = [...sec1, ...sec5];
+  if(vive === "Solo el Padre" || vive === "Ambos Padres"){
+    needed.push(...sec2);
+  }
+  if(vive === "Solo la Madre" || vive === "Ambos Padres"){
+    needed.push(...sec3);
+  }
+  if(vive === "Apoderado"){
+    needed.push(...sec4);
+  }
+  needed.forEach(k => {
+    if(!f[k] || f[k].toString().trim() === ''){
+      missing.push(k);
+    }
+  });
+  return missing;
+}
+</script>
+</body>
+</html>
