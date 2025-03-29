@@ -1785,5 +1785,13 @@ window.loadServicesFromFirestore = loadServicesFromFirestore;
 window.saveServicesToFirestore = saveServicesToFirestore;
 </script>
 
+
+<script>
+window.addEventListener("DOMContentLoaded", async () => {
+  if (window.loadMacrosFromFirestore) await window.loadMacrosFromFirestore();
+  if (window.loadServicesFromFirestore) await window.loadServicesFromFirestore();
+});
+</script>
+
 </body>
 </html>
