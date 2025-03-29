@@ -1929,6 +1929,52 @@ async function saveMacrosToFirestore(obj) {
 async function loadServicesFromFirestore() {
   const snapshot = await getDocs(collection(db, "services"));
   let data = [];
+  let nextServiceId = 1, nextVariantId = 1, nextServiceChildId = 1;
+
+  snapshot.forEach(docSnap => {
+    const service = docSnap.data();
+    // Verifica estructura mínima válida
+    if (!service.title || !Array.isArray(service.variants) || !Array.isArray(service.children)) return;
+    data.push(service);
+    if (service.id >= nextServiceId) nextServiceId = service.id + 1;
+    service.variants.forEach(v => {
+      if (v.id >= nextVariantId) nextVariantId = v.id + 1;
+    });
+    service.children.forEach(c => {
+      if (c.id >= nextServiceChildId) nextServiceChildId = c.id + 1;
+    });
+  });
+
+  // Si no existe el servicio "Matrícula", lo creamos
+  const hasMatricula = data.some(s => s.title === "Matrícula");
+  if (!hasMatricula) {
+    const matricula = {
+      id: nextServiceId++,
+      title: "Matrícula",
+      variants: [],
+      children: []
+    };
+    for (let i = 1; i <= 5; i++) {
+      matricula.variants.push({
+        id: nextVariantId++,
+        name: i.toString(),
+        price: 480,
+        days: ["LUN", "MAR", "MIE", "JUE", "VIE"],
+        start: "07:30",
+        end: "13:00"
+      });
+    }
+    data.unshift(matricula);
+    await setDoc(doc(db, "services", `service_${matricula.id}`), matricula);
+  }
+
+  window.services = data;
+  window.nextServiceId = nextServiceId;
+  window.nextVariantId = nextVariantId;
+  window.nextServiceChildId = nextServiceChildId;
+}
+  const snapshot = await getDocs(collection(db, "services"));
+  let data = [];
   snapshot.forEach(doc => data.push(doc.data()));
   window.localServicesData = JSON.stringify({ services: data, nextServiceId: 1000, nextVariantId: 1000, nextServiceChildId: 1000 });
 }
