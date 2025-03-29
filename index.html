@@ -624,7 +624,7 @@ function initMacros(){
   mostrarMacros();
 }
 function loadFromLocalStorageMacros(){
-  const data=window.localMacrosData;
+  const data=localStorage.getItem('macrosAlumnos');
   if(data){
     const parsed=JSON.parse(data);
     macros=parsed.macros||[];
@@ -886,7 +886,7 @@ function initServices(){
   setupDaysButtons();
 }
 function loadFromLocalStorageServices(){
-  const data=window.localServicesData;
+  const data=localStorage.getItem('servicesData');
   if(data){
     const parsed=JSON.parse(data);
     services=parsed.services||[];
@@ -897,7 +897,7 @@ function loadFromLocalStorageServices(){
 }
 function saveToLocalStorageServices(){
   const obj={ services, nextServiceId, nextVariantId, nextServiceChildId };
-  saveServicesToFirestore(obj);
+  localStorage.setItem('servicesData', JSON.stringify(obj));
 }
 function ensureMatriculaService(){
   if(serviceCheckDone)return;
@@ -1533,87 +1533,7 @@ function createFichaResumenHTML(f){
 }
 
 function createFichaForm(ch, container){
-  // === NUEVA FICHA INFORMÁTIVA CON VALIDACIÓN ===
-function createFichaForm(ch, container){
-  const fields = {
-    // SECCIÓN 1: Datos del Niño
-    dni: "DNI", nomApeNino: "Nombres y Apellidos", fechaNacNino: "Fecha de Nacimiento", lugarNac: "Lugar de Nacimiento",
-    edad: "Edad", sexo: "Sexo", religionNino: "Religión", tipoParto: "Tipo de Parto",
-    direccion: "Dirección", nroHermanos: "Número de Hermanos", telefonoPrincipal: "Teléfono (principal)",
-    telefonosEmergencia: "Teléfono(s) de Emergencia", centroMedico: "Centro Médico", nroSeguro: "Número de Seguro",
-    tipoSeguro: "Tipo de Seguro", conQuienVive: "¿Con quién vive?",
-
-    // SECCIÓN 2: Datos del Padre
-    apellidosPadre: "Apellidos y Nombres (Padre)", dniPadre: "DNI (Padre)", fnacPadre: "Fecha de Nacimiento (Padre)",
-    religionPadre: "Religión (Padre)", estadoCivilPadre: "Estado Civil (Padre)", instruccionPadre: "Grado de Instrucción (Padre)",
-    ocupacionPadre: "Ocupación (Padre)", telefonoPadre: "Teléfono (Padre)", emailPadre: "Correo Electrónico (Padre)",
-
-    // SECCIÓN 3: Datos de la Madre
-    apellidosMadre: "Apellidos y Nombres (Madre)", dniMadre: "DNI (Madre)", fnacMadre: "Fecha de Nacimiento (Madre)",
-    religionMadre: "Religión (Madre)", estadoCivilMadre: "Estado Civil (Madre)", instruccionMadre: "Grado de Instrucción (Madre)",
-    ocupacionMadre: "Ocupación (Madre)", telefonoMadre: "Teléfono (Madre)", emailMadre: "Correo Electrónico (Madre)",
-
-    // SECCIÓN 4: Apoderado
-    apellidosApod: "Apellidos y Nombres (Apoderado)", dniApod: "DNI (Apoderado)", fnacApod: "Fecha de Nacimiento (Apoderado)",
-    religionApod: "Religión (Apoderado)", estadoCivilApod: "Estado Civil (Apoderado)", instruccionApod: "Grado de Instrucción (Apoderado)",
-    ocupacionApod: "Ocupación (Apoderado)", telefonoApod: "Teléfono (Apoderado)", emailApod: "Correo Electrónico (Apoderado)",
-
-    // SECCIÓN 5: Desarrollo
-    complicParto: "Complicaciones Durante el Parto", desarrolloMotriz: "Desarrollo Motriz",
-    levantaCabeza: "¿Ya levanta la cabeza?", seSienta: "¿Se sienta?", gatea: "¿Gatea?",
-    sePara: "¿Se para?", camina: "¿Camina?", controlaEsfinter: "¿Controla esfínteres?",
-    primerasPalabras: "¿Ya dijo sus primeras palabras?", hablaFluido: "¿Ya habla con fluidez?", peso: "Peso",
-
-    // SECCIÓN 6: Salud
-    enfermedad: "¿Sufre alguna enfermedad?", cualesEnfermedades: "¿Cuál(es)?", alergias: "¿Alergias?", cualesAlergias: "¿Cuál(es)?",
-    vacunaVaricela: "Varicela: vacunado", vacunaSarampion: "Sarampión: vacunado", vacunaCovid: "COVID: vacunado", tipoSangre: "Tipo de Sangre"
-  };
-
-  const requiredKeys = Object.keys(fields);
-
-  container.innerHTML = '<h3>Ficha Informativa</h3>';
-  for (const key of requiredKeys) {
-    const div = document.createElement('div');
-    div.className = 'form-field';
-    const label = document.createElement('label');
-    label.textContent = fields[key];
-    const input = document.createElement('input');
-    input.type = "text";
-    input.value = ch.ficha[key] || "";
-    input.oninput = () => { ch.ficha[key] = input.value.trim(); };
-    input.dataset.required = "true";
-    div.appendChild(label);
-    div.appendChild(input);
-    container.appendChild(div);
-  }
-
-  // Botón guardar
-  const btn = document.createElement('button');
-  btn.className = 'finish-btn';
-  btn.textContent = 'Guardar';
-  btn.onclick = () => {
-    const missing = requiredKeys.filter(k => {
-      const val = ch.ficha[k] || "";
-      const vive = ch.ficha.conQuienVive;
-      const skipPadre = ["apellidosPadre","dniPadre","fnacPadre","religionPadre","estadoCivilPadre","instruccionPadre","ocupacionPadre","telefonoPadre","emailPadre"];
-      const skipMadre = ["apellidosMadre","dniMadre","fnacMadre","religionMadre","estadoCivilMadre","instruccionMadre","ocupacionMadre","telefonoMadre","emailMadre"];
-      const skipApod  = ["apellidosApod","dniApod","fnacApod","religionApod","estadoCivilApod","instruccionApod","ocupacionApod","telefonoApod","emailApod"];
-      if(vive === "Solo el Padre" && skipMadre.includes(k)) return false;
-      if(vive === "Solo la Madre" && skipPadre.includes(k)) return false;
-      if(vive === "Ambos Padres" && skipApod.includes(k)) return false;
-      if(vive === "Apoderado" && (skipPadre.includes(k) || skipMadre.includes(k))) return false;
-      return !val.trim();
-    });
-    if(missing.length > 0) {
-      alert("Faltan campos obligatorios: \n- " + missing.map(k => fields[k]).join("\n- "));
-      return;
-    }
-    ch.fichaCompleta = true;
-    saveToLocalStorageServices();
-    renderFicha(ch);
-  };
-  container.appendChild(btn);
-}
+  // Seccion1
   const sec1=document.createElement('div');
   sec1.className='subsection activeSec'; // visible siempre
   let h4_1=document.createElement('h4');
@@ -1778,87 +1698,7 @@ function checkFichaCompleta(ch){
   let missing=[];
   let f=ch.ficha;
   let vive=f.conQuienVive||"";
-  // === NUEVA FICHA INFORMÁTIVA CON VALIDACIÓN ===
-function createFichaForm(ch, container){
-  const fields = {
-    // SECCIÓN 1: Datos del Niño
-    dni: "DNI", nomApeNino: "Nombres y Apellidos", fechaNacNino: "Fecha de Nacimiento", lugarNac: "Lugar de Nacimiento",
-    edad: "Edad", sexo: "Sexo", religionNino: "Religión", tipoParto: "Tipo de Parto",
-    direccion: "Dirección", nroHermanos: "Número de Hermanos", telefonoPrincipal: "Teléfono (principal)",
-    telefonosEmergencia: "Teléfono(s) de Emergencia", centroMedico: "Centro Médico", nroSeguro: "Número de Seguro",
-    tipoSeguro: "Tipo de Seguro", conQuienVive: "¿Con quién vive?",
-
-    // SECCIÓN 2: Datos del Padre
-    apellidosPadre: "Apellidos y Nombres (Padre)", dniPadre: "DNI (Padre)", fnacPadre: "Fecha de Nacimiento (Padre)",
-    religionPadre: "Religión (Padre)", estadoCivilPadre: "Estado Civil (Padre)", instruccionPadre: "Grado de Instrucción (Padre)",
-    ocupacionPadre: "Ocupación (Padre)", telefonoPadre: "Teléfono (Padre)", emailPadre: "Correo Electrónico (Padre)",
-
-    // SECCIÓN 3: Datos de la Madre
-    apellidosMadre: "Apellidos y Nombres (Madre)", dniMadre: "DNI (Madre)", fnacMadre: "Fecha de Nacimiento (Madre)",
-    religionMadre: "Religión (Madre)", estadoCivilMadre: "Estado Civil (Madre)", instruccionMadre: "Grado de Instrucción (Madre)",
-    ocupacionMadre: "Ocupación (Madre)", telefonoMadre: "Teléfono (Madre)", emailMadre: "Correo Electrónico (Madre)",
-
-    // SECCIÓN 4: Apoderado
-    apellidosApod: "Apellidos y Nombres (Apoderado)", dniApod: "DNI (Apoderado)", fnacApod: "Fecha de Nacimiento (Apoderado)",
-    religionApod: "Religión (Apoderado)", estadoCivilApod: "Estado Civil (Apoderado)", instruccionApod: "Grado de Instrucción (Apoderado)",
-    ocupacionApod: "Ocupación (Apoderado)", telefonoApod: "Teléfono (Apoderado)", emailApod: "Correo Electrónico (Apoderado)",
-
-    // SECCIÓN 5: Desarrollo
-    complicParto: "Complicaciones Durante el Parto", desarrolloMotriz: "Desarrollo Motriz",
-    levantaCabeza: "¿Ya levanta la cabeza?", seSienta: "¿Se sienta?", gatea: "¿Gatea?",
-    sePara: "¿Se para?", camina: "¿Camina?", controlaEsfinter: "¿Controla esfínteres?",
-    primerasPalabras: "¿Ya dijo sus primeras palabras?", hablaFluido: "¿Ya habla con fluidez?", peso: "Peso",
-
-    // SECCIÓN 6: Salud
-    enfermedad: "¿Sufre alguna enfermedad?", cualesEnfermedades: "¿Cuál(es)?", alergias: "¿Alergias?", cualesAlergias: "¿Cuál(es)?",
-    vacunaVaricela: "Varicela: vacunado", vacunaSarampion: "Sarampión: vacunado", vacunaCovid: "COVID: vacunado", tipoSangre: "Tipo de Sangre"
-  };
-
-  const requiredKeys = Object.keys(fields);
-
-  container.innerHTML = '<h3>Ficha Informativa</h3>';
-  for (const key of requiredKeys) {
-    const div = document.createElement('div');
-    div.className = 'form-field';
-    const label = document.createElement('label');
-    label.textContent = fields[key];
-    const input = document.createElement('input');
-    input.type = "text";
-    input.value = ch.ficha[key] || "";
-    input.oninput = () => { ch.ficha[key] = input.value.trim(); };
-    input.dataset.required = "true";
-    div.appendChild(label);
-    div.appendChild(input);
-    container.appendChild(div);
-  }
-
-  // Botón guardar
-  const btn = document.createElement('button');
-  btn.className = 'finish-btn';
-  btn.textContent = 'Guardar';
-  btn.onclick = () => {
-    const missing = requiredKeys.filter(k => {
-      const val = ch.ficha[k] || "";
-      const vive = ch.ficha.conQuienVive;
-      const skipPadre = ["apellidosPadre","dniPadre","fnacPadre","religionPadre","estadoCivilPadre","instruccionPadre","ocupacionPadre","telefonoPadre","emailPadre"];
-      const skipMadre = ["apellidosMadre","dniMadre","fnacMadre","religionMadre","estadoCivilMadre","instruccionMadre","ocupacionMadre","telefonoMadre","emailMadre"];
-      const skipApod  = ["apellidosApod","dniApod","fnacApod","religionApod","estadoCivilApod","instruccionApod","ocupacionApod","telefonoApod","emailApod"];
-      if(vive === "Solo el Padre" && skipMadre.includes(k)) return false;
-      if(vive === "Solo la Madre" && skipPadre.includes(k)) return false;
-      if(vive === "Ambos Padres" && skipApod.includes(k)) return false;
-      if(vive === "Apoderado" && (skipPadre.includes(k) || skipMadre.includes(k))) return false;
-      return !val.trim();
-    });
-    if(missing.length > 0) {
-      alert("Faltan campos obligatorios: \n- " + missing.map(k => fields[k]).join("\n- "));
-      return;
-    }
-    ch.fichaCompleta = true;
-    saveToLocalStorageServices();
-    renderFicha(ch);
-  };
-  container.appendChild(btn);
-}, seccion5 siempre
+  // Seccion1, seccion5 siempre
   let sec1=["dni","nomApeNino","fechaNacNino","complicParto"]; 
   // etc. (pon más)
   // Padre
@@ -1906,97 +1746,6 @@ function createFichaForm(ch, container){
 
   window.firebaseDB = db;
   window.firebaseFns = { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot };
-</script>
-
-
-<script type="module">
-import { collection, getDocs, setDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
-const db = window.firebaseDB;
-
-async function loadMacrosFromFirestore() {
-  const snapshot = await getDocs(collection(db, "macros"));
-  let data = [];
-  snapshot.forEach(doc => data.push(doc.data()));
-  window.localMacrosData = JSON.stringify({ macros: data, nextMacroId: 1000, nextAlumnoId: 1000 }); // inicialización simple
-}
-
-async function saveMacrosToFirestore(obj) {
-  for (const macro of obj.macros) {
-    await setDoc(doc(db, "macros", `macro_${macro.id}`), macro);
-  }
-}
-
-async function loadServicesFromFirestore() {
-  const snapshot = await getDocs(collection(db, "services"));
-  let data = [];
-  let nextServiceId = 1, nextVariantId = 1, nextServiceChildId = 1;
-
-  snapshot.forEach(docSnap => {
-    const service = docSnap.data();
-    // Verifica estructura mínima válida
-    if (!service.title || !Array.isArray(service.variants) || !Array.isArray(service.children)) return;
-    data.push(service);
-    if (service.id >= nextServiceId) nextServiceId = service.id + 1;
-    service.variants.forEach(v => {
-      if (v.id >= nextVariantId) nextVariantId = v.id + 1;
-    });
-    service.children.forEach(c => {
-      if (c.id >= nextServiceChildId) nextServiceChildId = c.id + 1;
-    });
-  });
-
-  // Si no existe el servicio "Matrícula", lo creamos
-  const hasMatricula = data.some(s => s.title === "Matrícula");
-  if (!hasMatricula) {
-    const matricula = {
-      id: nextServiceId++,
-      title: "Matrícula",
-      variants: [],
-      children: []
-    };
-    for (let i = 1; i <= 5; i++) {
-      matricula.variants.push({
-        id: nextVariantId++,
-        name: i.toString(),
-        price: 480,
-        days: ["LUN", "MAR", "MIE", "JUE", "VIE"],
-        start: "07:30",
-        end: "13:00"
-      });
-    }
-    data.unshift(matricula);
-    await setDoc(doc(db, "services", `service_${matricula.id}`), matricula);
-  }
-
-  window.services = data;
-  window.nextServiceId = nextServiceId;
-  window.nextVariantId = nextVariantId;
-  window.nextServiceChildId = nextServiceChildId;
-}
-  const snapshot = await getDocs(collection(db, "services"));
-  let data = [];
-  snapshot.forEach(doc => data.push(doc.data()));
-  window.localServicesData = JSON.stringify({ services: data, nextServiceId: 1000, nextVariantId: 1000, nextServiceChildId: 1000 });
-}
-
-async function saveServicesToFirestore(obj) {
-  for (const service of obj.services) {
-    await setDoc(doc(db, "services", `service_${service.id}`), service);
-  }
-}
-
-window.loadMacrosFromFirestore = loadMacrosFromFirestore;
-window.saveMacrosToFirestore = saveMacrosToFirestore;
-window.loadServicesFromFirestore = loadServicesFromFirestore;
-window.saveServicesToFirestore = saveServicesToFirestore;
-</script>
-
-
-<script>
-window.addEventListener("DOMContentLoaded", async () => {
-  if (window.loadMacrosFromFirestore) await window.loadMacrosFromFirestore();
-  if (window.loadServicesFromFirestore) await window.loadServicesFromFirestore();
-});
 </script>
 
 </body>
