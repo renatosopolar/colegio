@@ -533,23 +533,24 @@
    *************************************************************/
   let screenStack = ["landing"];
 
-  function goToMacros(){
+  // Marcar como async para poder await cargar datos antes de proceder
+  async function goToMacros(){
     document.getElementById('landingPage').classList.add('hidden');
     document.getElementById('macrosContainer').classList.add('activeContainer');
     screenStack.push("macros");
-    initMacros();
+    await initMacros();
   }
-  function goToServices(){
+  async function goToServices(){
     document.getElementById('landingPage').classList.add('hidden');
     document.getElementById('servicesContainer').classList.add('activeContainer');
     screenStack.push("services");
-    initServices();
+    await initServices();
   }
-  function goToMatriculas(){
+  async function goToMatriculas(){
     document.getElementById('landingPage').classList.add('hidden');
     document.getElementById('matriculasContainer').classList.add('activeContainer');
     screenStack.push("matriculas");
-    initMatriculas();
+    await initMatriculas();
   }
   function goBack(){
     screenStack.pop();
@@ -594,7 +595,6 @@
   const anioDosDig = anioActual.toString().slice(-2);
   const meses = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
 
-  // Cargar/Guardar macros en Firestore (merge para conservar datos)
   async function loadFromFirebaseMacros(){
     try {
       const docRef = doc(db, "data", "macrosAlumnos");
@@ -843,7 +843,7 @@
     document.getElementById('contentNinos').classList.remove('activeTabContent');
     document.getElementById('tabMacros').classList.remove('activeTab');
     document.getElementById('tabNinos').classList.remove('activeTab');
-    if(tabName==='Macros'){
+    if(tabName === 'Macros'){
       document.getElementById('contentMacros').classList.add('activeTabContent');
       document.getElementById('tabMacros').classList.add('activeTab');
     } else {
@@ -856,6 +856,7 @@
    * ADMIN SERVICES
    **************************************************************/
   let services = [];
+  let editingVariantId = null;
   let nextServiceId = 1;
   let nextVariantId = 1;
   let nextServiceChildId = 1;
@@ -934,10 +935,10 @@
     document.getElementById('tabServicesMain').classList.remove('activeTab');
     document.getElementById('tabServicesVariants').classList.remove('activeTab');
     document.getElementById('tabServicesChildren').classList.remove('activeTab');
-    if(tabName==='ServicesMain'){
+    if(tabName === 'ServicesMain'){
       document.getElementById('contentServicesMain').classList.add('activeTabContent');
       document.getElementById('tabServicesMain').classList.add('activeTab');
-    } else if(tabName==='ServicesVariants'){
+    } else if(tabName === 'ServicesVariants'){
       document.getElementById('contentServicesVariants').classList.add('activeTabContent');
       document.getElementById('tabServicesVariants').classList.add('activeTab');
     } else {
@@ -1469,7 +1470,7 @@
         return;
       }
       ch.fichaCompleta = true;
-      // Guarda también el cambio en la ficha del niño dentro de services (si aplica)
+      // Guarda los cambios de ficha en el servicio (si corresponde) en Firestore
       saveToFirebaseServices();
       renderFicha(ch);
     };
@@ -1542,103 +1543,34 @@
   /**************************************************************
    * FUNCIONES ADMIN MATRÍCULAS
    **************************************************************/
-  function renderMatriculasList(){
-  // Obtenemos el servicio 'Matrícula'
-  const matServ = services.find(s => s.title === 'Matrícula');
-  if(!matServ) return;
-
-  // Seleccionamos el tbody donde se muestran las matrículas
-  const tbody = document.getElementById('tbodyMatriculas');
-  tbody.innerHTML = '';
-
-  // Recorremos todos los niños del servicio 'Matrícula'
-  matServ.children.forEach(ch => {
-    const row = tbody.insertRow();
-
-    // 1) Apellidos y Nombres
-    row.insertCell(0).textContent = `${ch.lastname} ${ch.name}`;
-
-    // 2) Año (o "Variante")
-    row.insertCell(1).textContent = getVariantName(ch.variantId) || '';
-
-    // 3) Botón Ficha Informativa
-    const cellF = row.insertCell(2);
-    const btnF = document.createElement('button');
-    btnF.className = 'ficha-btn';
-    btnF.style.fontWeight = '600';
-    btnF.style.borderRadius = '8px';
-    btnF.style.backgroundColor = ch.fichaCompleta ? '#3BB273' : '#E74C3C';
-    btnF.style.color = '#fff';
-    btnF.textContent = 'Ficha Informativa';
-    btnF.onclick = () => openFicha(ch);
-    cellF.appendChild(btnF);
-
-    // 4) Botón Pago de Pensión (Sí / No)
-    const cellP = row.insertCell(3);
-    const btnP = document.createElement('button');
-    btnP.className = 'pension-btn';
-    btnP.style.fontWeight = '600';
-    btnP.style.borderRadius = '8px';
-    btnP.style.color = '#fff';
-    if(ch.pagoPension){
-      btnP.style.backgroundColor = '#3BB273';
-      btnP.textContent = 'Sí';
-    } else {
-      btnP.style.backgroundColor = '#E74C3C';
-      btnP.textContent = 'No';
-    }
-    btnP.onclick = () => {
-      ch.pagoPension = !ch.pagoPension;
-      if(ch.pagoPension){
-        btnP.style.backgroundColor = '#3BB273'; 
-        btnP.textContent = 'Sí';
-      } else {
-        btnP.style.backgroundColor = '#E74C3C'; 
-        btnP.textContent = 'No';
-      }
-      // Guardamos el cambio en Firestore
-      saveToFirebaseServices();
-    };
-    cellP.appendChild(btnP);
-
-    // 5) Input para Pensiones Atrasadas
-    const cellA = row.insertCell(4);
-    const inputA = document.createElement('input');
-    inputA.type = 'number';
-    inputA.style.width = '60px';
-    inputA.value = ch.pensionesAtrasadas || 0;
-    inputA.onchange = () => {
-      ch.pensionesAtrasadas = parseInt(inputA.value) || 0;
-      saveToFirebaseServices();
-    };
-    cellA.appendChild(inputA);
-  });
-}
-  
-  function initMatriculas(){
-    loadFromFirebaseServices();
+  async function initMatriculas(){
+    await loadFromFirebaseServices();
     ensureMatriculaService();
     monthlyPensionCheck();
     renderMatriculasList();
   }
-  function filtrarMatriculas(){
-    const valAno = document.getElementById('filtroAno').value;
-    const valPension = document.getElementById('filtroPension').value;
+  function monthlyPensionCheck(){
+  const matServ = services.find(s => s.title === 'Matrícula');
+  if(!matServ) return;
+
+  const currentYM = getYearMonth();
+  matServ.children.forEach(ch => {
+    if(ch.lastPagoCheck && ch.lastPagoCheck !== currentYM){
+      if(!ch.pagoPension){
+        ch.pensionesAtrasadas = (ch.pensionesAtrasadas || 0) + 1;
+      }
+      ch.pagoPension = false;
+      ch.lastPagoCheck = currentYM;
+    }
+  });
+  saveToFirebaseServices();
+ }
+  function renderMatriculasList(){
     const matServ = services.find(s => s.title === 'Matrícula');
     if(!matServ) return;
-    let arr = [...matServ.children];
-    if(valAno){
-      // Suponiendo que el campo variantId almacena el año (ajusta según tu lógica)
-      arr = arr.filter(ch => getVariantName(ch.variantId) === valAno);
-    }
-    if(valPension === 'SI'){
-      arr = arr.filter(ch => (!ch.pagoPension || ch.pensionesAtrasadas > 0));
-    } else if(valPension === 'NO'){
-      arr = arr.filter(ch => (ch.pagoPension && ch.pensionesAtrasadas === 0));
-    }
     const tbody = document.getElementById('tbodyMatriculas');
     tbody.innerHTML = '';
-    arr.forEach(ch => {
+    matServ.children.forEach(ch => {
       const row = tbody.insertRow();
       row.insertCell(0).textContent = `${ch.lastname} ${ch.name}`;
       row.insertCell(1).textContent = getVariantName(ch.variantId) || '';
@@ -1682,20 +1614,63 @@
       cellA.appendChild(inputA);
     });
   }
-  function monthlyPensionCheck(){
+  function filtrarMatriculas(){
+    const valAno = document.getElementById('filtroAno').value;
+    const valPension = document.getElementById('filtroPension').value;
     const matServ = services.find(s => s.title === 'Matrícula');
     if(!matServ) return;
-    const currentYM = getYearMonth();
-    matServ.children.forEach(ch => {
-      if(ch.lastPagoCheck && ch.lastPagoCheck !== currentYM){
-        if(!ch.pagoPension){
-          ch.pensionesAtrasadas = (ch.pensionesAtrasadas || 0) + 1;
-        }
-        ch.pagoPension = false;
-        ch.lastPagoCheck = currentYM;
-      }
+    let arr = [...matServ.children];
+    if(valAno){
+      // Suponiendo que el campo variantId almacena el año (ajusta según tu lógica)
+      arr = arr.filter(ch => getVariantName(ch.variantId) === valAno);
+    }
+    if(valPension === 'SI'){
+      arr = arr.filter(ch => (!ch.pagoPension || ch.pensionesAtrasadas > 0));
+    } else if(valPension === 'NO'){
+      arr = arr.filter(ch => (ch.pagoPension && ch.pensionesAtrasadas === 0));
+    }
+    const tbody = document.getElementById('tbodyMatriculas');
+    tbody.innerHTML = '';
+    arr.forEach(ch => {
+      const row = tbody.insertRow();
+      row.insertCell(0).textContent = `${ch.lastname} ${ch.name}`;
+      row.insertCell(1).textContent = getVariantName(ch.variantId) || '';
+      const cellF = row.insertCell(2);
+      const btnF = document.createElement('button');
+      btnF.className = 'ficha-btn';
+      btnF.style.fontWeight = '600';
+      btnF.style.borderRadius = '8px';
+      btnF.style.backgroundColor = ch.fichaCompleta ? '#3BB273' : '#E74C3C';
+      btnF.style.color = '#fff';
+      btnF.textContent = 'Ficha Informativa';
+      btnF.onclick = () => openFicha(ch);
+      cellF.appendChild(btnF);
+      const cellP = row.insertCell(3);
+      const btnP = document.createElement('button');
+      btnP.className = 'pension-btn';
+      btnP.style.fontWeight = '600';
+      btnP.style.borderRadius = '8px';
+      btnP.style.color = '#fff';
+      btnP.style.backgroundColor = ch.pagoPension ? '#3BB273' : '#E74C3C';
+      btnP.textContent = ch.pagoPension ? 'Sí' : 'No';
+      btnP.onclick = () => {
+        ch.pagoPension = !ch.pagoPension;
+        btnP.style.backgroundColor = ch.pagoPension ? '#3BB273' : '#E74C3C';
+        btnP.textContent = ch.pagoPension ? 'Sí' : 'No';
+        saveToFirebaseServices();
+      };
+      cellP.appendChild(btnP);
+      const cellA = row.insertCell(4);
+      const inputA = document.createElement('input');
+      inputA.type = 'number';
+      inputA.style.width = '60px';
+      inputA.value = ch.pensionesAtrasadas || 0;
+      inputA.onchange = () => {
+        ch.pensionesAtrasadas = parseInt(inputA.value) || 0;
+        saveToFirebaseServices();
+      };
+      cellA.appendChild(inputA);
     });
-    saveToFirebaseServices();
   }
 
   /**************************************************************
