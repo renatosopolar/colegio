@@ -1542,6 +1542,79 @@
   /**************************************************************
    * FUNCIONES ADMIN MATRÍCULAS
    **************************************************************/
+  function renderMatriculasList(){
+  // Obtenemos el servicio 'Matrícula'
+  const matServ = services.find(s => s.title === 'Matrícula');
+  if(!matServ) return;
+
+  // Seleccionamos el tbody donde se muestran las matrículas
+  const tbody = document.getElementById('tbodyMatriculas');
+  tbody.innerHTML = '';
+
+  // Recorremos todos los niños del servicio 'Matrícula'
+  matServ.children.forEach(ch => {
+    const row = tbody.insertRow();
+
+    // 1) Apellidos y Nombres
+    row.insertCell(0).textContent = `${ch.lastname} ${ch.name}`;
+
+    // 2) Año (o "Variante")
+    row.insertCell(1).textContent = getVariantName(ch.variantId) || '';
+
+    // 3) Botón Ficha Informativa
+    const cellF = row.insertCell(2);
+    const btnF = document.createElement('button');
+    btnF.className = 'ficha-btn';
+    btnF.style.fontWeight = '600';
+    btnF.style.borderRadius = '8px';
+    btnF.style.backgroundColor = ch.fichaCompleta ? '#3BB273' : '#E74C3C';
+    btnF.style.color = '#fff';
+    btnF.textContent = 'Ficha Informativa';
+    btnF.onclick = () => openFicha(ch);
+    cellF.appendChild(btnF);
+
+    // 4) Botón Pago de Pensión (Sí / No)
+    const cellP = row.insertCell(3);
+    const btnP = document.createElement('button');
+    btnP.className = 'pension-btn';
+    btnP.style.fontWeight = '600';
+    btnP.style.borderRadius = '8px';
+    btnP.style.color = '#fff';
+    if(ch.pagoPension){
+      btnP.style.backgroundColor = '#3BB273';
+      btnP.textContent = 'Sí';
+    } else {
+      btnP.style.backgroundColor = '#E74C3C';
+      btnP.textContent = 'No';
+    }
+    btnP.onclick = () => {
+      ch.pagoPension = !ch.pagoPension;
+      if(ch.pagoPension){
+        btnP.style.backgroundColor = '#3BB273'; 
+        btnP.textContent = 'Sí';
+      } else {
+        btnP.style.backgroundColor = '#E74C3C'; 
+        btnP.textContent = 'No';
+      }
+      // Guardamos el cambio en Firestore
+      saveToFirebaseServices();
+    };
+    cellP.appendChild(btnP);
+
+    // 5) Input para Pensiones Atrasadas
+    const cellA = row.insertCell(4);
+    const inputA = document.createElement('input');
+    inputA.type = 'number';
+    inputA.style.width = '60px';
+    inputA.value = ch.pensionesAtrasadas || 0;
+    inputA.onchange = () => {
+      ch.pensionesAtrasadas = parseInt(inputA.value) || 0;
+      saveToFirebaseServices();
+    };
+    cellA.appendChild(inputA);
+  });
+}
+  
   function initMatriculas(){
     loadFromFirebaseServices();
     ensureMatriculaService();
@@ -1652,4 +1725,3 @@
 </script>
 </body>
 </html>
-
