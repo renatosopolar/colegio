@@ -1437,10 +1437,10 @@
       btnF.style.fontWeight='600';
       btnF.style.borderRadius='8px';
       if(ch.fichaCompleta){
-        btnF.style.backgroundColor='#3BB273'; // verde
+        btnF.style.backgroundColor='#3BB273';
         btnF.style.color='#fff';
       } else {
-        btnF.style.backgroundColor='#E74C3C'; // rojo
+        btnF.style.backgroundColor='#E74C3C';
         btnF.style.color='#fff';
       }
       btnF.textContent='Ficha Informativa';
@@ -1612,23 +1612,15 @@
     }
   }
 
+  // Se modifica para que se muestren TODAS las respuestas almacenadas
   function createFichaResumenHTML(f) {
-    let html = "";
-    html += "<h4>Sección 1: Datos del Niño</h4>";
-    html += `<p>DNI: ${f.dni || ''}</p>`;
-    html += `<p>Nombre: ${f.nomApeNino || ''}</p>`;
-    html += `<p>Fecha Nac: ${f.fechaNacNino || ''}</p>`;
-    html += "<hr/>";
-    html += "<h4>Sección 2: Padre</h4>";
-    html += `<p>Apellidos y Nombres: ${f.apellidosPadre || ''}</p>`;
-    html += "<hr/>";
-    html += "<h4>Sección 3: Madre</h4>";
-    html += "<hr/>";
-    html += "<h4>Sección 4: Apoderado</h4>";
-    html += "<hr/>";
-    html += "<h4>Sección 5: Info Adicional</h4>";
-    html += "<hr/>";
-    html += "<h4>Sección 6: Salud</h4>";
+    let html = "<div>";
+    for (const key in f) {
+      if (f.hasOwnProperty(key)) {
+        html += `<p><strong>${key}:</strong> ${f[key]}</p>`;
+      }
+    }
+    html += "</div>";
     return html;
   }
 
@@ -1773,6 +1765,7 @@
     container.appendChild(btnFinish);
   }
 
+  // Se ha modificado la función makeField para que prellene los campos con los valores actuales.
   function makeField(labelText, key, fieldType, fichaObj, opts) {
     const div = document.createElement('div');
     div.className = 'form-field';
@@ -1795,7 +1788,8 @@
         op.textContent = o;
         input.appendChild(op);
       });
-      input.value = '';
+      // Prellenar con el valor existente si lo hay.
+      input.value = fichaObj[key] || '';
       input.onchange = () => fichaObj[key] = input.value;
     } else if (fieldType === "date") {
       input = document.createElement('input');
@@ -1845,10 +1839,7 @@
     if (vive === "Apoderado") {
       needed.push(...sec4);
     }
-    // si vive con Padre y/o Madre, se podrían requerir sec2/sec3,
-    // pero en el original se muestra/hide la interfaz, no lo sumamos a 'needed' en el check
-    // (Ajustar si lo deseas)
-
+    // Nota: En el original no se validan sec2/sec3 según el diseño de la interfaz.
     needed.forEach(k => {
       if (!f[k] || f[k].toString().trim() === '') {
         missing.push(k);
