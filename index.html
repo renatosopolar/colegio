@@ -8,12 +8,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
 
   <style>
+    /* ======== ESTILOS GENERALES ======== */
     * { box-sizing: border-box; }
     body { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background-color: #e5efff; min-height: 100vh; }
     .hidden { display: none !important; }
     .active { display: block !important; }
 
-    /* ============ LANDING PAGE ============ */
+    /* ======== LANDING PAGE ======== */
     #landingPage {
       display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;
     }
@@ -25,27 +26,23 @@
     }
     .landing-buttons button:hover { background-color: #1a2e55; color: #f1c40f; }
 
-    /* ======== contenedor genérico ======== */
+    /* ======== CONTENEDORES ======== */
     .app-container {
-      display: none; background-color: #fff; width: 85%; max-width: 1100px; border: none;
-      border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin: 20px auto;
-      position: relative; padding-bottom: 60px;
+      display: none; background-color: #fff; width: 85%; max-width: 1100px;
+      border: none; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin: 20px auto; position: relative; padding-bottom: 60px;
     }
     .activeContainer { display: block !important; }
 
-    /* ====== Botón REGRESAR inferior izquierda ====== */
     .bottom-left-btn {
-      position: absolute; bottom: 15px; left: 15px; background-color: #4a90e2;
-      color: #fff; border: none; border-radius: 6px; padding: 8px 12px; font-weight: 600; cursor: pointer;
+      position: absolute; bottom: 15px; left: 15px; background-color: #4a90e2; color: #fff;
+      border: none; border-radius: 6px; padding: 8px 12px; font-weight: 600; cursor: pointer;
     }
     .bottom-left-btn:hover { background-color: #1a2e55; }
 
-    /* ======== TABS GENERALES ======== */
+    /* ======== TABS ======== */
     .tabs { display: flex; background-color: #1a2e55; border-radius: 6px 6px 0 0; }
-    .tab {
-      flex: 1; padding: 14px; text-align: center; cursor: pointer; color: #fff;
-      font-weight: 600; transition: background-color 0.2s;
-    }
+    .tab { flex: 1; padding: 14px; text-align: center; cursor: pointer; color: #fff; font-weight: 600; transition: background-color 0.2s; }
     .tab:hover { background-color: #4a90e2; }
     .tab.activeTab { background-color: #4a90e2; }
     .tab-content { display: none; padding: 20px; }
@@ -57,22 +54,23 @@
       border: 1px solid #ccc; border-radius: 6px; padding: 10px;
       display: flex; justify-content: space-between; align-items: center;
     }
-    #macrosContainer .macro-item button { background: none; border: none; cursor: pointer; color: #4a90e2; font-weight: 600; margin-left: 10px; }
-    #macrosContainer .macro-item button:hover { color: #1a2e55; }
-    #macrosContainer .create-macro {
-      display: flex; gap: 0.5rem; margin-top: 1rem; align-items: center;
+    #macrosContainer .macro-item button {
+      background: none; border: none; cursor: pointer; color: #4a90e2; font-weight: 600; margin-left: 10px;
     }
+    #macrosContainer .macro-item button:hover { color: #1a2e55; }
+    #macrosContainer .create-macro { display: flex; gap: 0.5rem; margin-top: 1rem; align-items: center; }
     #macrosContainer .create-macro input {
       border: 1px solid #ccc; border-radius: 6px; padding: 6px 10px; flex: 1; max-width: 300px;
     }
     #macrosContainer .create-macro button {
-      background-color: #f1c40f; color: #1a2e55; border: none; border-radius: 6px;
-      padding: 8px 12px; font-weight: 600; cursor: pointer;
+      background-color: #f1c40f; color: #1a2e55; border: none; border-radius: 6px; padding: 8px 12px; font-weight: 600; cursor: pointer;
     }
     #macrosContainer .create-macro button:hover { background-color: #1a2e55; color: #f1c40f; }
     #macrosContainer .register-children-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     #macrosContainer .macro-title { font-size: 1.1rem; font-weight: 600; color: #4a90e2; }
-    #macrosContainer .form-section { display: flex; flex-direction: column; max-width: 400px; gap: 0.5rem; margin-bottom: 1rem; }
+    #macrosContainer .form-section {
+      display: flex; flex-direction: column; max-width: 400px; gap: 0.5rem; margin-bottom: 1rem;
+    }
     #macrosContainer .form-section label { font-weight: 600; }
     #macrosContainer .form-section input { border: 1px solid #ccc; border-radius: 6px; padding: 6px 10px; max-width: 220px; }
     #macrosContainer .child-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
@@ -81,8 +79,7 @@
     #macrosContainer .child-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
     #macrosContainer .actions { margin-top: 1rem; display: flex; gap: 1rem; }
     #macrosContainer .actions button {
-      background-color: #f1c40f; color: #1a2e55; border: none; border-radius: 6px;
-      padding: 8px 12px; font-weight: 600; cursor: pointer;
+      background-color: #f1c40f; color: #1a2e55; border: none; border-radius: 6px; padding: 8px 12px; font-weight: 600; cursor: pointer;
     }
     #macrosContainer .actions button:hover { background-color: #1a2e55; color: #f1c40f; }
 
@@ -92,22 +89,19 @@
       border: 1px solid #ccc; border-radius: 6px; padding: 10px;
       display: flex; justify-content: space-between; align-items: center;
     }
-    #servicesContainer .service-item button { background: none; border: none; cursor: pointer; color: #4a90e2; font-weight: 600; margin-left: 10px; }
-    #servicesContainer .service-item button:hover { color: #1a2e55; }
-    #servicesContainer .create-service {
-      display: flex; gap: 0.5rem; margin-top: 1rem; align-items: center;
+    #servicesContainer .service-item button {
+      background: none; border: none; cursor: pointer; color: #4a90e2; font-weight: 600; margin-left: 10px;
     }
+    #servicesContainer .service-item button:hover { color: #1a2e55; }
+    #servicesContainer .create-service { display: flex; gap: 0.5rem; margin-top: 1rem; align-items: center; }
     #servicesContainer .create-service input {
       border: 1px solid #ccc; border-radius: 6px; padding: 6px 10px; flex: 1; max-width: 300px;
     }
     #servicesContainer .create-service button {
-      background-color: #f1c40f; color: #1a2e55; border: none; border-radius: 6px;
-      padding: 8px 12px; font-weight: 600; cursor: pointer;
+      background-color: #f1c40f; color: #1a2e55; border: none; border-radius: 6px; padding: 8px 12px; font-weight: 600; cursor: pointer;
     }
     #servicesContainer .create-service button:hover { background-color: #1a2e55; color: #f1c40f; }
-    #servicesContainer .variants-form {
-      display: flex; flex-direction: column; max-width: 400px; gap: 0.5rem; margin-top: 1rem;
-    }
+    #servicesContainer .variants-form { display: flex; flex-direction: column; max-width: 400px; gap: 0.5rem; margin-top: 1rem; }
     #servicesContainer .days-container { display: flex; gap: 6px; margin: 6px 0; }
     .day-btn {
       background-color: #4a90e2; color: white; border: none; border-radius: 6px;
@@ -139,7 +133,7 @@
       border: none; font-weight: 600; border-radius: 8px; cursor: pointer; padding: 6px 10px; outline: none;
     }
 
-    /* ========== FICHA INFORMATIVA ========== */
+    /* ======= FICHA INFORMATIVA ======= */
     #fichaInformativaPanel {
       display: none; background-color: #fff; width: 85%; max-width: 1100px;
       border: none; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -149,7 +143,9 @@
     #fichaInformativaPanel .section-title {
       font-weight: 600; font-size: 1.1rem; margin-top: 1rem; color: #1a2e55;
     }
-    .form-field { margin-bottom: 8px; display: flex; flex-direction: column; max-width: 400px; }
+    .form-field {
+      margin-bottom: 8px; display: flex; flex-direction: column; max-width: 400px;
+    }
     .form-field label { font-weight: 600; margin-bottom: 2px; }
     .form-field input[type='text'],
     .form-field input[type='number'],
@@ -393,7 +389,6 @@
    * GLOBAL Stack de pantallas y funciones
    **************************************************************/
   let screenStack = ["landing"];
-
   function goToMacros(){
     document.getElementById('landingPage').classList.add('hidden');
     document.getElementById('macrosContainer').classList.add('activeContainer');
@@ -437,11 +432,13 @@
     if (curr === "matriculas") {
       document.getElementById('matriculasContainer').classList.add('activeContainer');
       renderMatriculasList();
-    } else { goBack(); }
+    } else {
+      goBack();
+    }
   }
 
   /****************************************************
-   * MACROS CODE (Reemplazando localStorage con Firebase)
+   * MACROS CODE (Usando Firestore en lugar de localStorage)
    ****************************************************/
   let macros = [];
   let nextMacroId = 1;
@@ -452,7 +449,6 @@
   const anioActual = new Date().getFullYear();
   const anioDosDig = anioActual.toString().slice(-2);
   const meses = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
-
   async function loadFromFirebaseMacros(){
     try {
       const docRef = doc(db, "data", "macrosAlumnos");
@@ -467,15 +463,15 @@
         nextMacroId = 1;
         nextAlumnoId = 1;
       }
-    } catch(error){ console.error("Error loading macros from Firebase:", error); }
+    } catch(error){ console.error("Error loading macros:", error); }
   }
   async function saveToFirebaseMacros(){
     try {
       const docRef = doc(db, "data", "macrosAlumnos");
       const obj = { macros, nextMacroId, nextAlumnoId };
       await setDoc(docRef, obj);
-      console.log("Macros data saved to Firebase");
-    } catch(error){ console.error("Error saving macros to Firebase:", error); }
+      console.log("Macros saved to Firebase");
+    } catch(error){ console.error("Error saving macros:", error); }
   }
   async function initMacros() { await loadFromFirebaseMacros(); mostrarMacros(); }
   function mostrarMacros(){
@@ -506,8 +502,7 @@
     const nueva = { id: nextMacroId++, titulo, alumnos: [] };
     macros.push(nueva);
     document.getElementById('tituloMacro').value = '';
-    mostrarMacros();
-    saveToFirebaseMacros();
+    mostrarMacros(); saveToFirebaseMacros();
     editarMacro(nueva.id);
   }
   function editarMacro(macroId){
@@ -521,8 +516,7 @@
   function eliminarMacro(macroId){
     if(!confirm('¿Seguro de eliminar esta macro?')) return;
     macros = macros.filter(m => m.id !== macroId);
-    mostrarMacros();
-    saveToFirebaseMacros();
+    mostrarMacros(); saveToFirebaseMacros();
   }
   function mostrarAlumnosEnTablaMacros(arr){
     const tbody = document.getElementById('tbodyNinos');
@@ -564,7 +558,7 @@
     } else {
       const idx = mac.alumnos.findIndex(a => a.id === editingAlumnoId);
       if(idx >= 0){
-        // Preservamos la ficha si ya existe
+        // Actualiza el niño conservando la ficha ya ingresada
         mac.alumnos[idx] = { ...mac.alumnos[idx], nombre, apellidos, codigoRestante, fechaInscripcion, importe };
       }
       editingAlumnoId = null;
@@ -580,9 +574,9 @@
   }
   function editarNinoMacros(alumnoId){
     const mac = macros.find(m => m.id === editingMacroId);
-    if(!mac)return;
+    if(!mac) return;
     const al = mac.alumnos.find(a => a.id === alumnoId);
-    if(!al)return;
+    if(!al) return;
     editingAlumnoId = alumnoId;
     document.getElementById('nombre').value = al.nombre;
     document.getElementById('apellidos').value = al.apellidos;
@@ -593,7 +587,7 @@
   }
   function eliminarAlumnoMacros(alumnoId){
     const mac = macros.find(m => m.id === editingMacroId);
-    if(!mac)return;
+    if(!mac) return;
     mac.alumnos = mac.alumnos.filter(a => a.id !== alumnoId);
     mostrarAlumnosEnTablaMacros(mac.alumnos);
     saveToFirebaseMacros();
@@ -609,41 +603,53 @@
     if(!mac){ alert('Macro no encontrada'); return; }
     generateCount++;
     const hoy = new Date();
-    const fechaFact = hoy.getFullYear().toString() + String(hoy.getMonth()+1).padStart(2,'0') + String(hoy.getDate()).padStart(2,'0');
-    const ruc = '00018176347', moneda = 'PEN', numeroClase = '000', tipoActu = 'P';
+    const fechaFact = hoy.getFullYear().toString() + String(hoy.getMonth()+1).padStart(2, '0') + String(hoy.getDate()).padStart(2, '0');
+    const ruc = '00018176347';
+    const moneda = 'PEN';
+    const numeroClase = '000';
+    const tipoActu = 'P';
     let cabecera = '01' + ruc + numeroClase + moneda + fechaFact + '001' + ' '.repeat(7) + tipoActu + ' '.repeat(322) + '\r\n';
     let contenido = cabecera;
     const anioSiguiente = hoy.getFullYear() + 1;
     const fechaBloqueo = `${anioSiguiente}0930`;
-    let contadorRegistros = 0, sumaMin = 0, sumaMax = 0;
+    let contadorRegistros = 0;
+    let sumaMin = 0, sumaMax = 0;
     mac.alumnos.forEach(item => {
       const fechaObj = new Date(item.fechaInscripcion);
-      const anio = fechaObj.getFullYear(), mesInicio = fechaObj.getMonth(), diaInscripcion = fechaObj.getDate();
+      const anio = fechaObj.getFullYear();
+      const mesInicio = fechaObj.getMonth();
+      const diaInscripcion = fechaObj.getDate();
       for(let m = mesInicio; m < 12; m++){
-        const nombreCompleto = (item.apellidos + ' ' + item.nombre).substring(0,30).padEnd(30,' ');
+        const nombreCompleto = (item.apellidos + ' ' + item.nombre).substring(0,30).padEnd(30, ' ');
         const yy = anio.toString().slice(-2);
         const mesNombre = meses[m];
-        let codigoConc = (`0CJ${yy}${item.codigoRestante}${mesNombre}`).substring(0,40).padEnd(40,' ');
-        const mesStr = String(m+1).padStart(2,'0');
-        const diaStr = String(diaInscripcion).padStart(2,'0');
+        let codigoConc = `0CJ${yy}${item.codigoRestante}${mesNombre}`.substring(0,40).padEnd(40, ' ');
+        const mesStr = String(m+1).padStart(2, '0');
+        const diaStr = String(diaInscripcion).padStart(2, '0');
         const fechaVenc = `${anio}${mesStr}${diaStr}`;
         const importeCentavos = Math.round(item.importe * 100);
-        const importeStr = importeCentavos.toString().padStart(15,'0');
-        sumaMin += importeCentavos; sumaMax += importeCentavos;
+        const importeStr = importeCentavos.toString().padStart(15, '0');
+        sumaMin += importeCentavos;
+        sumaMax += importeCentavos;
         let linea = '02' + nombreCompleto + codigoConc + ' '.repeat(8) + fechaVenc + fechaBloqueo + '0'.repeat(2)
           + importeStr + importeStr + '0'.repeat(180) + 'L000000000000000' + '\r\n';
-        contenido += linea; contadorRegistros++;
+        contenido += linea;
+        contadorRegistros++;
       }
     });
-    let linea03 = '03' + String(contadorRegistros).padStart(9,'0') +
-      String(sumaMin).padStart(18,'0') + String(sumaMax).padStart(18,'0') +
-      '0'.repeat(18) + ' '.repeat(295);
+    let linea03 = '03';
+    linea03 += String(contadorRegistros).padStart(9, '0');
+    linea03 += String(sumaMin).padStart(18, '0');
+    linea03 += String(sumaMax).padStart(18, '0');
+    linea03 += '0'.repeat(18);
+    linea03 += ' '.repeat(295);
     contenido += linea03;
     const filename = `carga_bbva_${fechaFact}_${generateCount}.txt`;
     const blob = new Blob([contenido], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.href = url; link.download = filename;
+    link.href = url;
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -653,7 +659,7 @@
     document.getElementById('contentNinos').classList.remove('activeTabContent');
     document.getElementById('tabMacros').classList.remove('activeTab');
     document.getElementById('tabNinos').classList.remove('activeTab');
-    if(tabName==='Macros'){
+    if(tabName === 'Macros'){
       document.getElementById('contentMacros').classList.add('activeTabContent');
       document.getElementById('tabMacros').classList.add('activeTab');
     } else {
@@ -674,7 +680,6 @@
   let editingServiceId = null;
   let editingServiceChildId = null;
   let editingVariantId = null;
-
   async function loadFromFirebaseServices(){
     try {
       const docRef = doc(db, "data", "servicesData");
@@ -691,15 +696,15 @@
         nextVariantId = 1;
         nextServiceChildId = 1;
       }
-    } catch(error){ console.error("Error loading services from Firebase:", error); }
+    } catch(error){ console.error("Error loading services:", error); }
   }
   async function saveToFirebaseServices(){
     try {
       const docRef = doc(db, "data", "servicesData");
       const obj = { services, nextServiceId, nextVariantId, nextServiceChildId };
       await setDoc(docRef, obj);
-      console.log("Services data saved to Firebase");
-    } catch(error){ console.error("Error saving services to Firebase:", error); }
+      console.log("Services saved to Firebase");
+    } catch(error){ console.error("Error saving services:", error); }
   }
   async function initServices(){
     await loadFromFirebaseServices();
@@ -708,14 +713,14 @@
     setupDaysButtons();
   }
   function ensureMatriculaService(){
-    if(serviceCheckDone)return;
+    if(serviceCheckDone) return;
     serviceCheckDone = true;
     let mat = services.find(s => s.title === 'Matrícula');
     if(!mat){
-      mat = { id: nextServiceId++, title:'Matrícula', variants:[], children:[] };
+      mat = { id: nextServiceId++, title: 'Matrícula', variants: [], children: [] };
       services.unshift(mat);
-      for(let i=1;i<=5;i++){
-        const v = { id: nextVariantId++, name: i.toString(), price:480, days:['LUN','MAR','MIE','JUE','VIE'], start:'07:30', end:'13:00' };
+      for(let i = 1; i <= 5; i++){
+        const v = { id: nextVariantId++, name: i.toString(), price: 480, days: ['LUN','MAR','MIE','JUE','VIE'], start: '07:30', end: '13:00' };
         mat.variants.push(v);
       }
       saveToFirebaseServices();
@@ -729,10 +734,10 @@
     document.getElementById('tabServicesMain').classList.remove('activeTab');
     document.getElementById('tabServicesVariants').classList.remove('activeTab');
     document.getElementById('tabServicesChildren').classList.remove('activeTab');
-    if(tabName==='ServicesMain'){
+    if(tabName === 'ServicesMain'){
       document.getElementById('contentServicesMain').classList.add('activeTabContent');
       document.getElementById('tabServicesMain').classList.add('activeTab');
-    } else if(tabName==='ServicesVariants'){
+    } else if(tabName === 'ServicesVariants'){
       document.getElementById('contentServicesVariants').classList.add('activeTabContent');
       document.getElementById('tabServicesVariants').classList.add('activeTab');
     } else {
@@ -779,17 +784,18 @@
     const title = document.getElementById('tituloService').value.trim();
     if(!title){ alert('Ingresa un título para el servicio'); return; }
     if(title === 'Matrícula'){ alert('Ya existe "Matrícula"'); return; }
-    const newService = { id: nextServiceId++, title, variants:[], children:[] };
+    const newService = { id: nextServiceId++, title, variants: [], children: [] };
     services.push(newService);
     document.getElementById('tituloService').value = '';
-    showServicesList();
-    saveToFirebaseServices();
+    showServicesList(); saveToFirebaseServices();
     editService(newService.id);
   }
   function editService(serviceId){
     const serv = services.find(s => s.id === serviceId);
-    if(!serv)return;
-    if(serv.title === 'Matrícula'){ alert('No se puede editar el servicio "Matrícula"'); return; }
+    if(!serv) return;
+    if(serv.title === 'Matrícula'){
+      alert('No se puede editar el servicio "Matrícula"'); return;
+    }
     editingServiceId = serviceId;
     openTabServices('ServicesVariants');
     document.getElementById('tabServicesVariants').style.display = 'block';
@@ -800,8 +806,7 @@
   function deleteService(serviceId){
     if(!confirm('¿Seguro de eliminar este servicio?')) return;
     services = services.filter(s => s.id !== serviceId);
-    showServicesList();
-    saveToFirebaseServices();
+    showServicesList(); saveToFirebaseServices();
   }
   /* Variants logic */
   function setupDaysButtons(){
@@ -874,9 +879,9 @@
   }
   function editVariant(variantId){
     const serv = services.find(s => s.id === editingServiceId);
-    if(!serv)return;
+    if(!serv) return;
     const vr = serv.variants.find(v => v.id === variantId);
-    if(!vr)return;
+    if(!vr) return;
     editingVariantId = variantId;
     document.getElementById('variantName').value = vr.name;
     document.getElementById('variantPrice').value = vr.price;
@@ -890,7 +895,7 @@
   }
   function deleteVariant(variantId){
     const serv = services.find(s => s.id === editingServiceId);
-    if(!serv)return;
+    if(!serv) return;
     serv.variants = serv.variants.filter(v => v.id !== variantId);
     renderVariantsTable(serv.variants);
     saveToFirebaseServices();
@@ -904,20 +909,22 @@
   function openServiceChildren(serviceId){
     editingServiceId = serviceId;
     const serv = services.find(s => s.id === serviceId);
-    if(!serv)return;
+    if(!serv) return;
     openTabServices('ServicesChildren');
     document.getElementById('tabServicesChildren').style.display = 'block';
     document.getElementById('currentServiceTitleChild').textContent = serv.title;
     clearChildForm();
     renderChildrenTable(serv.children);
     const lab = document.getElementById('labelVariantChild');
-    lab.textContent = (serv.title==='Matrícula') ? 'Año' : 'Variante';
+    if(serv.title === 'Matrícula') lab.textContent = 'Año';
+    else lab.textContent = 'Variante';
     const sel = document.getElementById('childVariantSelect');
     sel.innerHTML = '';
     if(serv.variants.length === 0){
       const opt = document.createElement('option');
       opt.text = 'Sin variantes';
-      sel.add(opt); sel.disabled = true;
+      sel.add(opt);
+      sel.disabled = true;
     } else if(serv.variants.length === 1){
       sel.disabled = true;
       const v = serv.variants[0];
@@ -968,24 +975,28 @@
   function agregarOguardarChild(){
     if(!editingServiceId){ alert('No hay servicio seleccionado'); return; }
     const serv = services.find(s => s.id === editingServiceId);
-    if(!serv)return;
+    if(!serv) return;
     const name = document.getElementById('childName').value.trim().toUpperCase();
     const lastname = document.getElementById('childLastname').value.trim().toUpperCase();
     const dateIn = document.getElementById('childDate').value;
     const sel = document.getElementById('childVariantSelect');
     let variantId = null;
-    if(sel.options.length === 1 && !sel.disabled){ variantId = parseInt(sel.options[0].value); }
-    else if(!sel.disabled){ variantId = parseInt(sel.value); }
-    else if(sel.disabled && serv.variants.length === 1){ variantId = serv.variants[0].id; }
+    if(sel.options.length === 1 && !sel.disabled) variantId = parseInt(sel.options[0].value);
+    else if(!sel.disabled) variantId = parseInt(sel.value);
+    else if(sel.disabled && serv.variants.length === 1) variantId = serv.variants[0].id;
     if(!name || !lastname || !dateIn){ alert('Completa todos los campos'); return; }
     if(editingServiceChildId === null){
-      const nuevo = { id: nextServiceChildId++, name, lastname, date: dateIn, variantId,
-        ficha: {}, fichaCompleta: false, pagoPension: false, pensionesAtrasadas: 0, lastPagoCheck: getYearMonth() };
+      const nuevo = { 
+        id: nextServiceChildId++, 
+        name, lastname, date: dateIn, variantId,
+        ficha: {}, fichaCompleta: false, pagoPension: false, pensionesAtrasadas: 0,
+        lastPagoCheck: getYearMonth()
+      };
       serv.children.push(nuevo);
     } else {
       const idx = serv.children.findIndex(c => c.id === editingServiceChildId);
       if(idx >= 0){
-        // Se preserva la ficha actual al actualizar
+        // Hacemos merge para no eliminar ficha existente
         serv.children[idx] = { ...serv.children[idx], name, lastname, date: dateIn, variantId };
       }
       editingServiceChildId = null;
@@ -997,9 +1008,9 @@
   }
   function editServiceChild(childId){
     const serv = services.find(s => s.id === editingServiceId);
-    if(!serv)return;
+    if(!serv) return;
     const ch = serv.children.find(c => c.id === childId);
-    if(!ch)return;
+    if(!ch) return;
     editingServiceChildId = childId;
     document.getElementById('childName').value = ch.name;
     document.getElementById('childLastname').value = ch.lastname;
@@ -1010,7 +1021,7 @@
   }
   function deleteServiceChild(childId){
     const serv = services.find(s => s.id === editingServiceId);
-    if(!serv)return;
+    if(!serv) return;
     serv.children = serv.children.filter(c => c.id !== childId);
     renderChildrenTable(serv.children);
     saveToFirebaseServices();
@@ -1021,10 +1032,10 @@
     saveToFirebaseServices();
   }
   function getVariantName(varId){
-    if(!varId)return null;
+    if(!varId) return null;
     for(const s of services){
       const fv = s.variants.find(v => v.id === varId);
-      if(fv)return fv.name;
+      if(fv) return fv.name;
     }
     return null;
   }
@@ -1037,22 +1048,23 @@
    * FICHA INFORMATIVA
    **************************************************************/
   let currentFichaChild = null;
-  function openFicha(childObj){
+  function openFicha(childObj) {
     currentFichaChild = childObj;
     document.getElementById('matriculasContainer').classList.remove('activeContainer');
     screenStack.push("ficha");
     document.getElementById('fichaInformativaPanel').style.display = 'block';
     renderFicha(childObj);
   }
-  function renderFicha(ch){
+  function renderFicha(ch) {
     const cont = document.getElementById('fichaContent');
     cont.innerHTML = '';
-    if(!ch.ficha) ch.ficha = {};
-    if(!ch.hasOwnProperty('fichaCompleta')) ch.fichaCompleta = false;
-    if(ch.fichaCompleta){
+    if (!ch.ficha) ch.ficha = {};
+    if (!ch.hasOwnProperty('fichaCompleta')) ch.fichaCompleta = false;
+    if (ch.fichaCompleta) {
       const h3 = document.createElement('h3');
       h3.textContent = "Ficha Informativa (Completada)";
       cont.appendChild(h3);
+      // Mostrar todas las respuestas
       cont.innerHTML += createFichaResumenHTML(ch.ficha);
       const btnEd = document.createElement('button');
       btnEd.className = 'finish-btn';
@@ -1065,19 +1077,21 @@
       btnBack.textContent = 'Regresar';
       btnBack.onclick = goBackFicha;
       cont.appendChild(btnBack);
-    } else { createFichaForm(ch, cont); }
+    } else {
+      createFichaForm(ch, cont);
+    }
   }
-  function createFichaResumenHTML(f){
+  function createFichaResumenHTML(f) {
     let html = "<div>";
-    for(const key in f){
-      if(f.hasOwnProperty(key)){
+    for (const key in f) {
+      if (f.hasOwnProperty(key)) {
         html += `<p><strong>${key}:</strong> ${f[key]}</p>`;
       }
     }
     html += "</div>";
     return html;
   }
-  function createFichaForm(ch, container){
+  function createFichaForm(ch, container) {
     // Sección 1
     const sec1 = document.createElement('div');
     sec1.className = 'subsection';
@@ -1099,8 +1113,12 @@
     sec1.appendChild(makeField("Centro Médico en caso de urgencia", "centroMedico", "text", ch.ficha, { required: true }));
     sec1.appendChild(makeField("Número de Seguro", "numSeguro", "text", ch.ficha, { required: true }));
     sec1.appendChild(makeField("Tipo de Seguro", "tipoSeguro", "text", ch.ficha, { required: true }));
-    sec1.appendChild(makeField("¿Con quién o quiénes vive el menor?", "conQuienVive", "select", ch.ficha, { required: true, options: ["Solo el Padre", "Solo la Madre", "Ambos Padres", "Apoderado"] }));
+    sec1.appendChild(makeField("¿Con quién o quiénes vive el menor?", "conQuienVive", "select", ch.ficha, {
+      required: true,
+      options: ["Solo el Padre", "Solo la Madre", "Ambos Padres", "Apoderado"]
+    }));
     container.appendChild(sec1);
+
     // Sección 2 (Padre)
     const sec2 = document.createElement('div');
     sec2.className = 'subsection';
@@ -1117,6 +1135,7 @@
     sec2.appendChild(makeField("Teléfono", "telPadre", "text", ch.ficha, { required: true }));
     sec2.appendChild(makeField("Correo Electrónico", "emailPadre", "text", ch.ficha, { required: true }));
     container.appendChild(sec2);
+
     // Sección 3 (Madre)
     const sec3 = document.createElement('div');
     sec3.className = 'subsection';
@@ -1133,6 +1152,7 @@
     sec3.appendChild(makeField("Teléfono", "telMadre", "text", ch.ficha, { required: true }));
     sec3.appendChild(makeField("Correo Electrónico", "emailMadre", "text", ch.ficha, { required: true }));
     container.appendChild(sec3);
+
     // Sección 4 (Apoderado)
     const sec4 = document.createElement('div');
     sec4.className = 'subsection';
@@ -1149,6 +1169,7 @@
     sec4.appendChild(makeField("Teléfono", "telApod", "text", ch.ficha, { required: true }));
     sec4.appendChild(makeField("Correo Electrónico", "emailApod", "text", ch.ficha, { required: true }));
     container.appendChild(sec4);
+
     // Sección 5: Desarrollo
     const sec5 = document.createElement('div');
     sec5.className = 'subsection';
@@ -1166,6 +1187,7 @@
     sec5.appendChild(makeField("¿Ya dijo sus primeras palabras?", "primerasPalabras", "select", ch.ficha, { required: true, options: ["Sí", "No"] }));
     sec5.appendChild(makeField("¿Ya habla con fluidez?", "hablaFluidez", "select", ch.ficha, { required: true, options: ["Sí", "No"] }));
     container.appendChild(sec5);
+
     // Sección 6: Salud
     const sec6 = document.createElement('div');
     sec6.className = 'subsection';
@@ -1185,25 +1207,21 @@
     else if (vive === "Solo la Madre") { sec2.style.display = 'none'; sec4.style.display = 'none'; }
     else if (vive === "Ambos Padres") { sec4.style.display = 'none'; }
     else if (vive === "Apoderado") { sec2.style.display = 'none'; sec3.style.display = 'none'; }
-    
+
     const btnFinish = document.createElement('button');
     btnFinish.className = 'finish-btn';
     btnFinish.textContent = 'Guardar';
     btnFinish.onclick = () => {
-      // Si bien se valida, forzamos el guardado y establecemos fichaCompleta
       let missing = checkFichaCompleta(ch);
-      if(missing.length > 0){
-        alert("Faltan campos:\n- " + missing.join("\n- "));
-        return;
-      }
+      if(missing.length > 0){ alert("Faltan campos:\n- " + missing.join("\n- ")); return; }
+      // Asigna fichaCompleta para indicar que ya se completó y guarda los datos sin reinicializarlos
       ch.fichaCompleta = true;
-      // Actualizamos la ficha en el niño correspondiente
       saveToFirebaseServices();
       renderFicha(ch);
     };
     container.appendChild(btnFinish);
   }
-  function makeField(labelText, key, fieldType, fichaObj, opts){
+  function makeField(labelText, key, fieldType, fichaObj, opts) {
     const div = document.createElement('div');
     div.className = 'form-field';
     const lab = document.createElement('label');
@@ -1222,7 +1240,6 @@
         op.textContent = o;
         input.appendChild(op);
       });
-      // Prellenar con el valor existente si lo hay.
       input.value = fichaObj[key] || '';
       input.onchange = () => fichaObj[key] = input.value;
     } else if(fieldType === "date"){
@@ -1251,17 +1268,19 @@
     let f = ch.ficha;
     let sec1 = ["dni", "nomApeNino", "fechaNacNino", "lugarNacNino", "edadNino", "sexoNino", "religionNino", "tipoParto",
                 "direccionNino", "nroHermanos", "telPrincipal", "telEmergencia", "centroMedico", "numSeguro", "tipoSeguro"];
-    let sec2 = ["apellidosPadre", "dniPadre", "fechaNacPadre", "religionPadre", "estadoCivilPadre", "gradoInstrPadre", "ocupPadre", "telPadre", "emailPadre"];
-    let sec3 = ["apellidosMadre", "dniMadre", "fechaNacMadre", "religionMadre", "estadoCivilMadre", "gradoInstrMadre", "ocupMadre", "telMadre", "emailMadre"];
-    let sec4 = ["apellidosApod", "dniApod", "fechaNacApod", "religionApod", "estadoCivilApod", "gradoInstrApod", "ocupApod", "telApod", "emailApod"];
-    let sec5 = ["complicParto", "desarrolloMotriz", "levantaCabeza", "seSienta", "gatea", "sePara", "camina", "controlaEsfinteres", "primerasPalabras", "hablaFluidez"];
+    let sec2 = ["apellidosPadre", "dniPadre", "fechaNacPadre", "religionPadre", "estadoCivilPadre", "gradoInstrPadre",
+                "ocupPadre", "telPadre", "emailPadre"];
+    let sec3 = ["apellidosMadre", "dniMadre", "fechaNacMadre", "religionMadre", "estadoCivilMadre", "gradoInstrMadre",
+                "ocupMadre", "telMadre", "emailMadre"];
+    let sec4 = ["apellidosApod", "dniApod", "fechaNacApod", "religionApod", "estadoCivilApod", "gradoInstrApod",
+                "ocupApod", "telApod", "emailApod"];
+    let sec5 = ["complicParto", "desarrolloMotriz", "levantaCabeza", "seSienta", "gatea", "sePara", "camina",
+                "controlaEsfinteres", "primerasPalabras", "hablaFluidez"];
     let sec6 = ["enfermedades", "alergias", "vacunaVaricela", "vacunaSarampion", "vacunaCOVID", "tipoSangre"];
     let vive = f.conQuienVive || "";
     let needed = [...sec1, ...sec5, ...sec6];
     if(vive === "Apoderado") { needed.push(...sec4); }
-    needed.forEach(k => {
-      if(!f[k] || f[k].toString().trim() === ''){ missing.push(k); }
-    });
+    needed.forEach(k => { if(!f[k] || f[k].toString().trim() === '') missing.push(k); });
     return missing;
   }
 
